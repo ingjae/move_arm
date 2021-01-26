@@ -15,6 +15,8 @@ import tf
 from std_msgs.msg import Header
 from geometry_msgs.msg import Point, Pose, Quaternion, Twist, Vector3
 from moveit_commander.conversions import pose_to_list
+from tf.transformations import quaternion_from_euler, euler_from_quaternion
+
 def all_close(goal, actual, tolerance):
   
   all_equal = True
@@ -93,13 +95,14 @@ class simple_move():
         pose_target.position.z = pos_z
         pose_target.orientation.x = ori_x  
         pose_target.orientation.y = ori_y 
-        pose_target.orientation.z = ori_z  
         pose_target.orientation.w = ori_w 
-
-        group.set_pose_target(pose_target)
-        rospy.logwarn("move to pose")
-        plan = group.go(wait=True)
-        rospy.sleep(10)
+        pose_target.orientation.z = ori_z  
+        if (pos_z > 0.12):
+            group.set_pose_target(pose_target)
+            plan = group.go(wait=True)
+        else:
+            print("wrong pose")
+        rospy.sleep(5)
 
         current_pose = self.group.get_current_pose().pose
         return all_close(pose_target, current_pose, 0.01)
@@ -108,18 +111,16 @@ class simple_move():
         group.clear_pose_targets()
         pose_target = geometry_msgs.msg.Pose()
         plan1 = group.plan()
-        pose_target.position.x = pos_x
+        pose_target.position.x = pos_x  
         pose_target.position.y = pos_y
         pose_target.position.z = pos_z
         pose_target.orientation.x = 1
         pose_target.orientation.y = 0
         pose_target.orientation.z = 0
         pose_target.orientation.w = 0
-
         group.set_pose_target(pose_target)
-        rospy.logwarn("move to pose")
         plan = group.go(wait=True)
-        rospy.sleep(10)
+        rospy.sleep(5)
 
         current_pose = self.group.get_current_pose().pose
         return all_close(pose_target, current_pose, 0.01)
@@ -152,7 +153,7 @@ class simple_move():
         joint_goal[5] = 0.000
         # rospy.logwarn("move to Home")
         group.go(joint_goal, wait=True)
-        rospy.sleep(7)
+        rospy.sleep(5)
 
         current_joints = self.group.get_current_joint_values()
         return all_close(joint_goal, current_joints, 0.01)
@@ -197,42 +198,69 @@ class simple_move():
 
         # Note: We are just planning, not asking move_group to actually move the robot yet:
         return plan, fraction
-   
 
-def main(): # 1. 타겟 20cm 앞에서 정지 2. 20cm 앞으로 이동
-    Xarm6 = simple_move()
-    Xarm6.move_camera_pose() # 카메라로 보고
+def lookup_trans_tar():
     target_listener = tf.TransformListener()
-    rate = rospy.Rate(20.0)
-    
     while not rospy.is_shutdown():
-        rospy.logwarn("Start Xarm Control!")
         try:
-            (trans,rot) = target_listener.lookupTransform('/world','/object_13', rospy.Time(0)) # object
-            print (trans[2])
-            rospy.logwarn("Move to Z+0.20!")
-            # if trans[2]+0.11 < 0.12:
-            #     trans[2] = 0.12
+            (tar_trans,tar_rot) = target_listener.lookupTransform('/world','/fiducial_100', rospy.Time(0))
 
-            if Xarm6.move_xyz(trans[0]-0.005,trans[1]+0.022,trans[2]+0.12) == True :
-                rospy.logwarn("Now Move to Target!")    
-                break
-                # if james_ear.push_action(trans[0],trans[1],trans[2]) == True :
-                # else:
-                #     pass
-            else:
-                pass     
-
+            print("detect target_pos")
+            return (tar_trans, tar_rot)
         except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
-            print("Look up Failed")
-         
-        rate.sleep()
-    moveit_commander.roscpp_shutdown()
+            pass
+
+def lookup_trans_cam():
+    target_listener = tf.TransformListener()
+    while not rospy.is_shutdown():
+        try:
+            (cam_trans,cam_rot) = target_listener.lookupTransform('/world','/camera_link', rospy.Time(0))
+
+            print("detect cam_pose")
+            return (cam_trans, cam_rot)
+        except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
+            pass
+
+def quternion_rotation(tar1,tar2,tar3,tar4):
+    # quaternion transform
+    q_eul = euler_from_quaternion([tar1,tar2,tar3,tar4])
+    q_eul = [3.14,0,q_eul[2]]
+    # euler transform    
+    new_rot = quaternion_from_euler(q_eul[0],q_eul[1],q_eul[2])    
+    return new_rot
 
 
+def main():
+    Xarm6 = simple_move()
+    Xarm6.move_camera_pose() # 카메라로 보는 위치로 이동
+    (tar_trans, tar_rot) = lookup_trans_tar()
+    (cam_trans, cam_rot) = lookup_trans_cam()
+    print(tar_trans)
+    print("")
+    print(cam_trans)
+    if abs(tar_trans[0])-abs(cam_trans[0])>0.003 or abs(tar_trans[1])-abs(cam_trans[1])>0.003:
+        # go to center pose
+        Xarm6.move_xyz(tar_trans[0]-0.05,tar_trans[1],tar_trans[2]+0.25)
+        # lookup 1 more
+        (tar_trans, tar_rot) = lookup_trans_tar()
+        # new_rot = quternion_rotation(tar_rot[0],tar_rot[1],tar_rot[2],tar_rot[3])
 
-if __name__=="__main__":    
+        # move down(default center)
+        Xarm6.move_xyz(tar_trans[0]-0.085,tar_trans[1]+0.017,tar_trans[2]+0.09)
+
+    else:
+        # move to revised position  
+        # Xarm6.move_pose(tar_trans[0]+0.005,tar_trans[1],tar_trans[2]+0.02,new_rot[0],new_rot[1],new_rot[2],new_rot[3])
+        print("move down")
+
+if __name__=="__main__":
     try:
-        main()      
+        main()    
+        # simple_move().move_camera_pose() # 카메라로 보고
+
     except rospy.ROSInterruptException:
         pass
+
+
+# in Quaternion [0.996, 0.092, -0.004, 0.007]
+#               [ 0.99998616  0.0. 0.00526112]
