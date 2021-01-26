@@ -97,12 +97,12 @@ class simple_move():
         pose_target.orientation.y = ori_y 
         pose_target.orientation.w = ori_w 
         pose_target.orientation.z = ori_z  
-        if (pos_z > 0.12):
+        if (pos_z > 0.1):
             group.set_pose_target(pose_target)
             plan = group.go(wait=True)
         else:
             print("wrong pose")
-        rospy.sleep(5)
+        rospy.sleep(3)
 
         current_pose = self.group.get_current_pose().pose
         return all_close(pose_target, current_pose, 0.01)
@@ -199,28 +199,29 @@ class simple_move():
         # Note: We are just planning, not asking move_group to actually move the robot yet:
         return plan, fraction
 
+# marker(fidicial static_tansform) lookup 
 def lookup_trans_tar():
     target_listener = tf.TransformListener()
     while not rospy.is_shutdown():
         try:
-            (tar_trans,tar_rot) = target_listener.lookupTransform('/world','/fiducial_100', rospy.Time(0))
-
-            print("detect target_pos")
+            (tar_trans,tar_rot) = target_listener.lookupTransform('/world','/marker', rospy.Time(0))
+            print("marker checkout")
             return (tar_trans, tar_rot)
         except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
             pass
 
-def lookup_trans_cam():
+# eef lookup
+def lookup_trans_eef():
     target_listener = tf.TransformListener()
     while not rospy.is_shutdown():
         try:
-            (cam_trans,cam_rot) = target_listener.lookupTransform('/world','/camera_link', rospy.Time(0))
-
-            print("detect cam_pose")
-            return (cam_trans, cam_rot)
+            (eef_trans,eef_rot) = target_listener.lookupTransform('/world','/link_eef', rospy.Time(0))
+            print("link_eef checkout")
+            return (eef_trans, eef_rot)
         except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
             pass
 
+# qurternion transform (only 'yaw' value)
 def quternion_rotation(tar1,tar2,tar3,tar4):
     # quaternion transform
     q_eul = euler_from_quaternion([tar1,tar2,tar3,tar4])
@@ -232,35 +233,32 @@ def quternion_rotation(tar1,tar2,tar3,tar4):
 
 def main():
     Xarm6 = simple_move()
-    Xarm6.move_camera_pose() # 카메라로 보는 위치로 이동
-    (tar_trans, tar_rot) = lookup_trans_tar()
-    (cam_trans, cam_rot) = lookup_trans_cam()
-    print(tar_trans)
-    print("")
-    print(cam_trans)
-    if abs(tar_trans[0])-abs(cam_trans[0])>0.003 or abs(tar_trans[1])-abs(cam_trans[1])>0.003:
-        # go to center pose
-        Xarm6.move_xyz(tar_trans[0]-0.05,tar_trans[1],tar_trans[2]+0.25)
-        # lookup 1 more
+    Xarm6.move_camera_pose() # camera pose
+    # repeat 2
+    for i in range(2):
+        print("%d iter start" %(i+1))
+        # lookup 1
         (tar_trans, tar_rot) = lookup_trans_tar()
-        # new_rot = quternion_rotation(tar_rot[0],tar_rot[1],tar_rot[2],tar_rot[3])
+        (eef_trans, eef_rot) = lookup_trans_eef()
+        new_rot = quternion_rotation(tar_rot[0],tar_rot[1],tar_rot[2],tar_rot[3])
+        
+        print("%d rotate" %(i+1))
+        Xarm6.move_pose(eef_trans[0],eef_trans[1],eef_trans[2],new_rot[0],new_rot[1],new_rot[2],new_rot[3])
 
-        # move down(default center)
-        Xarm6.move_xyz(tar_trans[0]-0.085,tar_trans[1]+0.017,tar_trans[2]+0.09)
+        # lookup 2
+        (tar_trans, tar_rot) = lookup_trans_tar()
 
-    else:
-        # move to revised position  
-        # Xarm6.move_pose(tar_trans[0]+0.005,tar_trans[1],tar_trans[2]+0.02,new_rot[0],new_rot[1],new_rot[2],new_rot[3])
-        print("move down")
+        print("%d go to center" %(i+1))
+        Xarm6.move_pose(tar_trans[0],tar_trans[1],tar_trans[2]+0.25,new_rot[0],new_rot[1],new_rot[2],new_rot[3])
+    
+    # finish down
+    Xarm6.move_pose(tar_trans[0],tar_trans[1],tar_trans[2]+0.09,new_rot[0],new_rot[1],new_rot[2],new_rot[3])
+
 
 if __name__=="__main__":
     try:
         main()    
-        # simple_move().move_camera_pose() # 카메라로 보고
+        # simple_move().move_camera_pose() # camera pose
 
     except rospy.ROSInterruptException:
         pass
-
-
-# in Quaternion [0.996, 0.092, -0.004, 0.007]
-#               [ 0.99998616  0.0. 0.00526112]
