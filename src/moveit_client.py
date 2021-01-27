@@ -153,7 +153,7 @@ class simple_move():
         joint_goal[5] = 0.000
         # rospy.logwarn("move to Home")
         group.go(joint_goal, wait=True)
-        rospy.sleep(5)
+        rospy.sleep(2)
 
         current_joints = self.group.get_current_joint_values()
         return all_close(joint_goal, current_joints, 0.01)
@@ -252,8 +252,18 @@ def main():
         Xarm6.move_pose(tar_trans[0],tar_trans[1],tar_trans[2]+0.25,new_rot[0],new_rot[1],new_rot[2],new_rot[3])
     
     # finish down
-    Xarm6.move_pose(tar_trans[0],tar_trans[1],tar_trans[2]+0.09,new_rot[0],new_rot[1],new_rot[2],new_rot[3])
+    # Xarm6.move_pose(tar_trans[0],tar_trans[1],tar_trans[2]+0.09,new_rot[0],new_rot[1],new_rot[2],new_rot[3])
+    
+    # pen down
+    # Xarm6.move_pose(tar_trans[0],tar_trans[1],tar_trans[2]+0.142,new_rot[0],new_rot[1],new_rot[2],new_rot[3])
+    
+    # real down
+    # Xarm6.move_pose(tar_trans[0],tar_trans[1],tar_trans[2]+0.115,new_rot[0],new_rot[1],new_rot[2],new_rot[3])
 
+    Xarm6.move_pose(tar_trans[0],tar_trans[1],tar_trans[2]+0.18,new_rot[0],new_rot[1],new_rot[2],new_rot[3])
+    Xarm6.move_pose(tar_trans[0],tar_trans[1],tar_trans[2]+0.134,new_rot[0],new_rot[1],new_rot[2],new_rot[3])
+    rospy.sleep(1)
+    Xarm6.move_pose(tar_trans[0],tar_trans[1],tar_trans[2]+0.18,new_rot[0],new_rot[1],new_rot[2],new_rot[3])
 
 if __name__=="__main__":
     try:
