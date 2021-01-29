@@ -257,9 +257,7 @@ def main():
     # pen down
     # Xarm6.move_pose(tar_trans[0],tar_trans[1],tar_trans[2]+0.142,new_rot[0],new_rot[1],new_rot[2],new_rot[3])
     
-    # real down
-    # Xarm6.move_pose(tar_trans[0],tar_trans[1],tar_trans[2]+0.115,new_rot[0],new_rot[1],new_rot[2],new_rot[3])
-
+    # sponge down
     Xarm6.move_pose(tar_trans[0],tar_trans[1],tar_trans[2]+0.18,new_rot[0],new_rot[1],new_rot[2],new_rot[3])
     Xarm6.move_pose(tar_trans[0],tar_trans[1],tar_trans[2]+0.134,new_rot[0],new_rot[1],new_rot[2],new_rot[3])
     rospy.sleep(1)
