@@ -102,7 +102,7 @@ class simple_move():
             plan = group.go(wait=True)
         else:
             print("wrong pose")
-        rospy.sleep(3)
+        rospy.sleep(0.5)
 
         current_pose = self.group.get_current_pose().pose
         return all_close(pose_target, current_pose, 0.01)
@@ -199,6 +199,7 @@ class simple_move():
         # Note: We are just planning, not asking move_group to actually move the robot yet:
         return plan, fraction
 
+
 # marker(fidicial static_tansform) lookup 
 def lookup_trans_tar():
     target_listener = tf.TransformListener()
@@ -230,7 +231,6 @@ def quternion_rotation(tar1,tar2,tar3,tar4):
     new_rot = quaternion_from_euler(q_eul[0],q_eul[1],q_eul[2])    
     return new_rot
 
-
 def main():
     Xarm6 = simple_move()
     Xarm6.move_camera_pose() # camera pose
@@ -259,7 +259,7 @@ def main():
     
     # sponge down
     Xarm6.move_pose(tar_trans[0],tar_trans[1],tar_trans[2]+0.18,new_rot[0],new_rot[1],new_rot[2],new_rot[3])
-    Xarm6.move_pose(tar_trans[0],tar_trans[1],tar_trans[2]+0.134,new_rot[0],new_rot[1],new_rot[2],new_rot[3])
+    Xarm6.move_pose(tar_trans[0],tar_trans[1],tar_trans[2]+0.114,new_rot[0],new_rot[1],new_rot[2],new_rot[3])
     rospy.sleep(1)
     Xarm6.move_pose(tar_trans[0],tar_trans[1],tar_trans[2]+0.18,new_rot[0],new_rot[1],new_rot[2],new_rot[3])
 
