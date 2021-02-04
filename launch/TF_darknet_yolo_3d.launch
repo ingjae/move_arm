@@ -4,14 +4,14 @@
   <node pkg="tf" type="static_transform_publisher" name="camera_link" args="-0.030 0.00 0.070 0 -1.57 0 link7 camera_link 50" />
   
   <!-- target point publisher -->
-  <node pkg="open_manipulator_basic_move" type="james_ear_point_publisher_backup.py" name="james_ear_point_publisher_backup" />
 
+  <node pkg="move_arm" type="darknet_yolo_3d_point.py" name="darknet_yolo_3d_point" />
 
   <!-- TF publisher -->
-  <node pkg="open_manipulator_basic_move" type="james_ear_frame_publisher.py" name="james_ear_frame_publisher" />
+  <node pkg="move_arm" type="darknet_yolo_3d_frame.py" name="darknet_yolo_3d_frame" />
 
   <!-- Robot Action Client -->
-  <!-- <node pkg="open_manipulator_basic_move" type="james_ear_client_for_video.py" name="james_ear_client_for_video" /> -->
+  <!-- <node pkg="move_arm" type="darknet_yolo_3d_client.py" name="darknet_yolo_3d_client" /> -->
 
 
 </launch>
