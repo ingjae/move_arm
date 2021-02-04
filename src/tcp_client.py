@@ -1,7 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 import time
-import socket
 import rospy
 from std_msgs.msg import String,Bool
  
@@ -16,7 +15,7 @@ class TCPListener(object):
         self.is_finished = False
 
     def tcpCallback(self, msg):
-        self.tcp_msg = msg
+        self.tcp_msg = msg.data
 
     def checkPublisher(self):
         self.is_finished = True
@@ -30,27 +29,27 @@ if __name__=="__main__":
         tcp = TCPListener()
         while not rospy.is_shutdown():
             # print(tcp.tcp_msg)
-            if tcp.tcp_msg.data == "00000001":
+            if tcp.tcp_msg == "00000001":
                 print("Moving Out Position")
                 time.sleep(5)# robot arm moving
                 tcp.checkPublisher()
-            elif tcp.tcp_msg.data == "00000002":
+            elif tcp.tcp_msg == "00000002":
                 print("QR Position and Calculate TF")
                 time.sleep(5)# robot arm moving
                 tcp.checkPublisher()
-            elif tcp.tcp_msg.data == "00000004":
+            elif tcp.tcp_msg == "00000004":
                 print("Charging Position")
                 time.sleep(5)# robot arm moving
                 tcp.checkPublisher()
-            elif tcp.tcp_msg.data == "00000003":
+            elif tcp.tcp_msg == "00000003":
                 print("Waiting Position")
                 time.sleep(5)# robot arm moving
                 tcp.checkPublisher()
-            elif tcp.tcp_msg.data == "00000005":
+            elif tcp.tcp_msg == "00000005":
                 print("Movig In Position")
                 time.sleep(5)# robot arm moving
                 tcp.checkPublisher()
-            elif tcp.tcp_msg.data == "":
+            elif tcp.tcp_msg == "":
                 pass
             else:
                 print("Error")
