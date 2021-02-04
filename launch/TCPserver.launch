@@ -1,0 +1,7 @@
+<launch> 
+  <!-- target point publisher -->
+  <node pkg="move_arm" type="tcp_client.py" name="tcp_client" />
+
+  <!-- TF publisher -->
+  <node pkg="move_arm" type="tcp_server.py" name="tcp_server" />
+</launch>
