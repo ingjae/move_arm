@@ -282,27 +282,39 @@ if __name__=="__main__":
         client = MoveClient()
         while not rospy.is_shutdown():
             # print(tcp.tcp_msg)
-            if client.tcp_msg.data == "0001":
+            if client.tcp_msg.data == "0010":
                 print("Initial_setting_a")
                 client.move_initial_pose_a()
                 client.checkPublisher()
-            elif client.tcp_msg.data == "0002":
+            elif client.tcp_msg.data == "0020":
                 print("Initial_setting_b")
                 client.move_initial_pose_b()
                 client.checkPublisher()
-            elif client.tcp_msg.data == "0003":
+            elif client.tcp_msg.data == "0030":
                 print("Initial_setting_c")
                 client.move_initial_pose_c()
                 client.checkPublisher()
-            elif client.tcp_msg.data == "0004":
+            elif client.tcp_msg.data == "0110":
+                print("Initial_camera_pose")
+                client.move_camera_pose(0)
+                client.checkPublisher()
+            elif client.tcp_msg.data == "0120":
                 print("Initial_camera_pose")
                 client.move_camera_pose(90)
                 client.checkPublisher()
-            elif client.tcp_msg.data == "0005":
+            elif client.tcp_msg.data == "0130":
+                print("Initial_camera_pose")
+                client.move_camera_pose(180)
+                client.checkPublisher()
+            elif client.tcp_msg.data == "0140":
+                print("Initial_camera_pose")
+                client.move_camera_pose(270)
+                client.checkPublisher()
+            elif client.tcp_msg.data == "0210":
                 print("Charging pose")
                 charging_point = charging_down_pose()
                 client.checkPublisher()
-            elif client.tcp_msg.data == "0006":
+            elif client.tcp_msg.data == "0220":
                 print("UnCharging pose")
                 charging_up_pose(charging_point[0],charging_point[1],charging_point[2],charging_point[3],charging_point[4],charging_point[5],charging_point[6])
                 client.checkPublisher()

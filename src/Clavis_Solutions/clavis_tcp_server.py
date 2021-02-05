@@ -43,49 +43,71 @@ if __name__=="__main__":
                         break
                     else:
                         pass
-                if buffer =="0001":
-                    
+                if buffer =="0010": 
                     if tcp_server.check == True:
                         connectionSock.send('0011')
                         tcp_server.check = False
                     else:
-                        connectionSock.send('0001')
-                elif buffer == "0002":
+                        connectionSock.send('0012')
+                elif buffer == "0020":
                    
                     if tcp_server.check == True:
-                        connectionSock.send('0012')
+                        connectionSock.send('0021')
                         tcp_server.check = False
                     else:
-                        connectionSock.send('0002')
+                        connectionSock.send('0022')
                     
-                elif buffer == "0003":
+                elif buffer == "0030":
                  
                     if tcp_server.check == True:
-                        connectionSock.send('0013')
+                        connectionSock.send('0031')
                         tcp_server.check = False
                     else:
-                        connectionSock.send('0003')
-                elif buffer == "0004":
+                        connectionSock.send('0032')
+                elif buffer == "0110":
                     
                     if tcp_server.check == True:
-                        connectionSock.send('0014')
+                        connectionSock.send('0111')
                         tcp_server.check = False
                     else:
-                        connectionSock.send('0004')
-                elif buffer == "0005":
+                        connectionSock.send('0112')
+                elif buffer == "0120":
                     
                     if tcp_server.check == True:
-                        connectionSock.send('0015')
+                        connectionSock.send('0121')
                         tcp_server.check = False
                     else:
-                        connectionSock.send('0005')
-                elif buffer == "0006":
+                        connectionSock.send('0122')
+                elif buffer == "0130":
                     
                     if tcp_server.check == True:
-                        connectionSock.send('0016')
+                        connectionSock.send('0131')
                         tcp_server.check = False
                     else:
-                        connectionSock.send('0006')
+                        connectionSock.send('0132')
+                elif buffer == "0140":
+                    
+                    if tcp_server.check == True:
+                        connectionSock.send('0141')
+                        tcp_server.check = False
+                    else:
+                        connectionSock.send('0142')
+
+                elif buffer == "0210":
+                    
+                    if tcp_server.check == True:
+                        connectionSock.send('0211')
+                        tcp_server.check = False
+                    else:
+                        connectionSock.send('0212')
+
+                elif buffer == "0220":
+                    
+                    if tcp_server.check == True:
+                        connectionSock.send('0221')
+                        tcp_server.check = False
+                    else:
+                        connectionSock.send('0222')
                     
                 else:
                     pass
