@@ -10,7 +10,7 @@ class TCPServer(object):
         self.HOST='192.168.1.100'
         self.PORT=8008
         self.BUFFER=4096
-        self.RATE = rospy.Rate(10)
+        self.RATE = rospy.Rate(10)              
         self.pub=rospy.Publisher('tcptopic',String,queue_size=10)
         self.sub = rospy.Subscriber('is_finished', Bool,self.checkCallback)
         self.check = False
@@ -39,10 +39,10 @@ if __name__=="__main__":
                 tcp_server.pub.publish(buffer)
                 tcp_server.check = False
                 while True :
-                        if tcp_server.check = True:
-                            break
-                        else:
-                            pass
+                    if tcp_server.check == True:
+                        break
+                    else:
+                        pass
                 if buffer = "00000001":
                     if tcp_server.check == True:
                         connectionSock.send('00000101')
