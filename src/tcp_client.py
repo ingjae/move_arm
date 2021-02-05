@@ -29,23 +29,23 @@ if __name__=="__main__":
         tcp = TCPListener()
         while not rospy.is_shutdown():
             # print(tcp.tcp_msg)
-            if tcp.tcp_msg == "00000001":
+            if tcp.tcp_msg == "0001":
                 print("Moving Out Position")
                 time.sleep(5)# robot arm moving
                 tcp.checkPublisher()
-            elif tcp.tcp_msg == "00000002":
+            elif tcp.tcp_msg == "0002":
                 print("QR Position and Calculate TF")
                 time.sleep(5)# robot arm moving
                 tcp.checkPublisher()
-            elif tcp.tcp_msg == "00000004":
+            elif tcp.tcp_msg == "0004":
                 print("Charging Position")
                 time.sleep(5)# robot arm moving
                 tcp.checkPublisher()
-            elif tcp.tcp_msg == "00000003":
+            elif tcp.tcp_msg == "0003":
                 print("Waiting Position")
                 time.sleep(5)# robot arm moving
                 tcp.checkPublisher()
-            elif tcp.tcp_msg == "00000005":
+            elif tcp.tcp_msg == "0005":
                 print("Movig In Position")
                 time.sleep(5)# robot arm moving
                 tcp.checkPublisher()

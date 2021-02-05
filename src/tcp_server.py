@@ -8,7 +8,7 @@ from std_msgs.msg import String,Bool
 class TCPServer(object):
     def __init__(self):
         self.HOST='192.168.1.200'
-        self.PORT=8003
+        self.PORT=8080
         self.BUFFER=4096
         self.RATE = rospy.Rate(10)              
         self.pub=rospy.Publisher('tcptopic',String,queue_size=10)
@@ -43,49 +43,49 @@ if __name__=="__main__":
                         break
                     else:
                         pass
-                if buffer =="00000001":
+                if buffer =="0001":
                     
                     if tcp_server.check == True:
-                        connectionSock.send('00000101')
+                        connectionSock.send('0011')
                         tcp_server.check = False
                     else:
-                        connectionSock.send('00000001')
-                elif buffer == "00000002":
+                        connectionSock.send('0001')
+                elif buffer == "0002":
                    
                     if tcp_server.check == True:
-                        connectionSock.send('00000102')
+                        connectionSock.send('0012')
                         tcp_server.check = False
                     else:
-                        connectionSock.send('00000002')
+                        connectionSock.send('0002')
                     
-                elif buffer == "00000003":
+                elif buffer == "0003":
+                 
+                    if tcp_server.check == True:
+                        connectionSock.send('0013')
+                        tcp_server.check = False
+                    else:
+                        connectionSock.send('0003')
+                elif buffer == "0004":
                     
                     if tcp_server.check == True:
-                        connectionSock.send('00000103')
+                        connectionSock.send('0014')
                         tcp_server.check = False
                     else:
-                        connectionSock.send('00000003')
-                elif buffer == "00000004":
+                        connectionSock.send('0004')
+                elif buffer == "0005":
                     
                     if tcp_server.check == True:
-                        connectionSock.send('00000104')
+                        connectionSock.send('0015')
                         tcp_server.check = False
                     else:
-                        connectionSock.send('00000004')
-                elif buffer == "00000005":
+                        connectionSock.send('0005')
+                elif buffer == "0006":
                     
                     if tcp_server.check == True:
-                        connectionSock.send('00000105')
+                        connectionSock.send('0016')
                         tcp_server.check = False
                     else:
-                        connectionSock.send('00000005')
-                elif buffer == "00000006":
-                    
-                    if tcp_server.check == True:
-                        connectionSock.send('00000106')
-                        tcp_server.check = False
-                    else:
-                        connectionSock.send('00000006')
+                        connectionSock.send('0006')
                     
                 else:
                     pass
