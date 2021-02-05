@@ -5,7 +5,6 @@ import rospy
 from std_msgs.msg import String,Bool
 import math
 from math import sin, cos, pi
-
 import sys
 import copy
 import moveit_commander
@@ -171,57 +170,12 @@ class TCPListener(object):
         rospy.sleep(2)
 
         current_joints = self.group.get_current_joint_values()
-        return all_close(joint_goal, current_joints, 0.01)      
-
-    # fourth movement : If failed charging, go to camera pose
-    def move_intermediate_pose(self):
-        group = self.group
-        joint_goal = group.get_current_joint_values()
-
-        joint_goal[0] = -0.261799      # -15
-        joint_goal[1] = 0.226893       # 13
-        joint_goal[2] = -0.314159      # -18
-        joint_goal[3] = -0.0174533     # -1
-        joint_goal[4] = 0.10472        # 6
-        joint_goal[5] = -0.488692      # -28   
-        group.go(joint_goal, wait=True)
-        rospy.sleep(0.5)
-
-        joint_goal[0] = 0.000
-        joint_goal[1] = -0.5794
-        joint_goal[2] = -0.3334
-        joint_goal[3] = 0.000
-        joint_goal[4] = 0.9424
-        joint_goal[5] = 0.000
-        group.go(joint_goal, wait=True)
-        rospy.sleep(2)
-
-        current_joints = self.group.get_current_joint_values()
-        return all_close(joint_goal, current_joints, 0.01)
-
+        return all_close(joint_goal, current_joints, 0.01)  
 
     # fifth movement : Entering the robot.
     def move_final_pose(self):
         group = self.group
         joint_goal = group.get_current_joint_values()
-        print("final pose")
-        joint_goal[0] = -0.261799      # -15
-        joint_goal[1] = 0.226893       # 13
-        joint_goal[2] = -0.314159      # -18
-        joint_goal[3] = -0.0174533     # -1
-        joint_goal[4] = 0.10472        # 6
-        joint_goal[5] = -0.488692      # -28   
-        group.go(joint_goal, wait=True)
-        rospy.sleep(0.5)
-
-        joint_goal[0] = -0.820305      # -47
-        joint_goal[1] = -0.383972      # -22
-        joint_goal[2] = -0.471239      # -27
-        joint_goal[3] = -0.0174533     # -1
-        joint_goal[4] = 0.820305       # 47
-        joint_goal[5] = 0.767945       # 44
-        group.go(joint_goal, wait=True)
-        rospy.sleep(0.5)
 
         joint_goal[0] = -1.682497      # -96.4
         joint_goal[1] = -0.0418879     # -2.4
@@ -415,6 +369,11 @@ def quternion_rotation(tar1,tar2,tar3,tar4):
     new_rot = quaternion_from_euler(q_eul[0],q_eul[1],q_eul[2])    
     return new_rot
 
+def up_from_charging(tar1,tar2,tar3,rot1,rot2,rot3,rot4):
+    tcp = TCPListener()
+    tcp.move_pose(tar1,tar2,tar3+0.18,rot1,rot2,rot3,rot4)
+    rospy.sleep(0.5)
+    
 # third movement : Go to charge
 def move_charging_pose():
     tcp = TCPListener()
@@ -438,9 +397,9 @@ def move_charging_pose():
     # sponge down
     tcp.move_pose(tar_trans[0],tar_trans[1],tar_trans[2]+0.18,new_rot[0],new_rot[1],new_rot[2],new_rot[3])
     tcp.move_pose(tar_trans[0],tar_trans[1],tar_trans[2]+0.114,new_rot[0],new_rot[1],new_rot[2],new_rot[3])
+    print("go to charge")
     rospy.sleep(1)
-    # tcp.move_pose(tar_trans[0],tar_trans[1],tar_trans[2]+0.18,new_rot[0],new_rot[1],new_rot[2],new_rot[3])    
-
+    return(tar_trans[0],tar_trans[1],tar_trans[2],new_rot[0],new_rot[1],new_rot[2],new_rot[3])
 
 if __name__=="__main__":    
     try:
@@ -452,22 +411,30 @@ if __name__=="__main__":
             if tcp.tcp_msg.data == "00000001":
                 print("Moving Out Position")
                 tcp.move_initial_pose()
+                time.sleep(8)
                 tcp.checkPublisher()
             elif tcp.tcp_msg.data == "00000002":
                 print("QR Position and Calculate TF")
                 tcp.move_camera_pose()
-                tcp.checkPublisher()
-            elif tcp.tcp_msg.data == "00000004":
-                print("Charging Position")
-                tcp.move_charging_pose()
+                time.sleep(5)
                 tcp.checkPublisher()
             elif tcp.tcp_msg.data == "00000003":
+                print("Charging Position")
+                # check the charging pose
+                charging_point = move_charging_pose()
+                time.sleep(5)
+                tcp.checkPublisher()
+            elif tcp.tcp_msg.data == "00000004":
                 print("Waiting Position")
-                tcp.move_intermediate_pose()
+                up_from_charging(charging_point[0],charging_point[1],charging_point[2],charging_point[3],charging_point[4],charging_point[5],charging_point[6])
+                tcp.move_camera_pose()
+                time.sleep(5)
                 tcp.checkPublisher()
             elif tcp.tcp_msg.data == "00000005":
                 print("Movig In Position")
+                up_from_charging(charging_point[0],charging_point[1],charging_point[2],charging_point[3],charging_point[4],charging_point[5],charging_point[6])
                 tcp.move_final_pose()
+                time.sleep(5)
                 tcp.checkPublisher()
             elif tcp.tcp_msg.data == "":
                 pass
