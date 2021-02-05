@@ -29,7 +29,7 @@ def all_close(goal, actual, tolerance):
   return True
 
 ## move client 
-class TCPListener(object):
+class MoveClient(object):
     def __init__(self):
         # xarm
         moveit_commander.roscpp_initialize(sys.argv)
@@ -235,12 +235,12 @@ def quternion_rotation(tar1,tar2,tar3,tar4):
     return new_rot
 
 def charging_up_pose(tar1,tar2,tar3,rot1,rot2,rot3,rot4):
-    tcp = TCPListener()
-    tcp.move_pose(tar1,tar2,tar3+0.18,rot1,rot2,rot3,rot4)
+    client = MoveClient()
+    client.move_pose(tar1,tar2,tar3+0.18,rot1,rot2,rot3,rot4)
     rospy.sleep(0.5)
     
 def charging_down_pose():
-    tcp = TCPListener()
+    client = MoveClient()
     # repeat 2
     for i in range(2):
         print("%d iter start" %(i+1))
@@ -249,16 +249,16 @@ def charging_down_pose():
         (eef_trans, eef_rot) = lookup_trans_eef()
         new_rot = quternion_rotation(tar_rot[0],tar_rot[1],tar_rot[2],tar_rot[3])
         print("%d rotate pose" %(i+1))
-        tcp.move_pose(eef_trans[0],eef_trans[1],eef_trans[2],new_rot[0],new_rot[1],new_rot[2],new_rot[3])
+        client.move_pose(eef_trans[0],eef_trans[1],eef_trans[2],new_rot[0],new_rot[1],new_rot[2],new_rot[3])
         # lookup 2
         (tar_trans, tar_rot) = lookup_trans_tar()
 
         print("%d center pose" %(i+1))
-        tcp.move_pose(tar_trans[0],tar_trans[1],tar_trans[2]+0.25,new_rot[0],new_rot[1],new_rot[2],new_rot[3])
+        client.move_pose(tar_trans[0],tar_trans[1],tar_trans[2]+0.25,new_rot[0],new_rot[1],new_rot[2],new_rot[3])
     
     # sponge down
-    tcp.move_pose(tar_trans[0],tar_trans[1],tar_trans[2]+0.18,new_rot[0],new_rot[1],new_rot[2],new_rot[3])
-    tcp.move_pose(tar_trans[0],tar_trans[1],tar_trans[2]+0.114,new_rot[0],new_rot[1],new_rot[2],new_rot[3])
+    client.move_pose(tar_trans[0],tar_trans[1],tar_trans[2]+0.18,new_rot[0],new_rot[1],new_rot[2],new_rot[3])
+    client.move_pose(tar_trans[0],tar_trans[1],tar_trans[2]+0.114,new_rot[0],new_rot[1],new_rot[2],new_rot[3])
     print("go to charge")
     rospy.sleep(1.5)
     return(tar_trans[0],tar_trans[1],tar_trans[2],new_rot[0],new_rot[1],new_rot[2],new_rot[3])
@@ -267,36 +267,39 @@ if __name__=="__main__":
     try:
         rospy.init_node('move_client')
         rate = rospy.Rate(10)
-        tcp = TCPListener()
+        client = MoveClient()
         while not rospy.is_shutdown():
             # print(tcp.tcp_msg)
-            if tcp.tcp_msg.data == "00000001":
-                print("Moving Out Position")
+            if client.tcp_msg.data == "00000001":
+                print("Initial_setting_a")
 
-                tcp.checkPublisher()
-            elif tcp.tcp_msg.data == "00000002":
-                print("QR Position and Calculate TF")
+                client.checkPublisher()
+            elif client.tcp_msg.data == "00000002":
+                print("Initial_setting_b")
 
-                tcp.checkPublisher()
-            elif tcp.tcp_msg.data == "00000003":
-                print("Charging Position")
-                # check the charging pose
+                client.checkPublisher()
+            elif client.tcp_msg.data == "00000003":
+                print("Initial_setting_c")
 
-                tcp.checkPublisher()
-            elif tcp.tcp_msg.data == "00000004":
-                print("Waiting Position")
+                client.checkPublisher()
+            elif client.tcp_msg.data == "00000004":
+                print("Initial_pose")
 
-                tcp.move_camera_pose()
-                tcp.checkPublisher()
-            elif tcp.tcp_msg.data == "00000005":
-                print("Movig In Position")
+                client.move_camera_pose()
+                client.checkPublisher()
+            elif client.tcp_msg.data == "00000005":
+                print("Charging pose")
 
-                tcp.checkPublisher()
-            elif tcp.tcp_msg.data == "":
+                client.checkPublisher()
+            elif client.tcp_msg.data == "00000006":
+                print("UnCharging pose")
+
+                client.checkPublisher()
+            elif client.tcp_msg.data == "":
                 pass
             else:
                 print("Error")
-            tcp.tcp_msg.data ="" 
+            client.tcp_msg.data ="" 
             rate.sleep()
     except Exception as e:
         rospy.logerr(e)
