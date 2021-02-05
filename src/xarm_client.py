@@ -78,7 +78,8 @@ class MoveClient(object):
             group.set_pose_target(pose_target)
             plan = group.go(wait=True)
         else:
-            print("wrong pose")
+            pass
+            # print("wrong pose")
         rospy.sleep(0.5)
         current_pose = self.group.get_current_pose().pose
         return all_close(pose_target, current_pose, 0.01)
@@ -201,7 +202,8 @@ class MoveClient(object):
             current_joints = self.group.get_current_joint_values()
             return all_close(joint_goal, current_joints, 3)
         else:
-            print("you select the wrong pose")
+            pass
+            # print("you select the wrong pose")
 
 # marker(fidicial static_tansform) lookup 
 def lookup_trans_tar():
@@ -209,7 +211,7 @@ def lookup_trans_tar():
     while not rospy.is_shutdown():
         try:
             (tar_trans,tar_rot) = target_listener.lookupTransform('/world','/marker', rospy.Time(0))
-            print("marker checkout")
+            rospy.logwarn("marker checkout")
             return (tar_trans, tar_rot)
         except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
             pass
@@ -220,7 +222,8 @@ def lookup_trans_eef():
     while not rospy.is_shutdown():
         try:
             (eef_trans,eef_rot) = target_listener.lookupTransform('/world','/link_eef', rospy.Time(0))
-            print("link_eef checkout")
+            rospy.logwarn("link_eef checkout")
+
             return (eef_trans, eef_rot)
         except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
             pass
@@ -259,7 +262,9 @@ def charging_down_pose():
     # sponge down
     client.move_pose(tar_trans[0],tar_trans[1],tar_trans[2]+0.18,new_rot[0],new_rot[1],new_rot[2],new_rot[3])
     client.move_pose(tar_trans[0],tar_trans[1],tar_trans[2]+0.114,new_rot[0],new_rot[1],new_rot[2],new_rot[3])
-    print("go to charge")
+    
+    rospy.logwarn("go to charge")
+
     rospy.sleep(1.5)
     return(tar_trans[0],tar_trans[1],tar_trans[2],new_rot[0],new_rot[1],new_rot[2],new_rot[3])
 
@@ -299,7 +304,7 @@ if __name__=="__main__":
             elif client.tcp_msg.data == "":
                 pass
             else:
-                print("Error")
+                rospy.logwarn("Error")
             client.tcp_msg.data ="" 
             rate.sleep()
     except Exception as e:
