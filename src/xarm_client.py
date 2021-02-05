@@ -272,28 +272,29 @@ if __name__=="__main__":
             # print(tcp.tcp_msg)
             if client.tcp_msg.data == "00000001":
                 print("Initial_setting_a")
-
+                client.move_initial_pose_a()
                 client.checkPublisher()
             elif client.tcp_msg.data == "00000002":
                 print("Initial_setting_b")
-
+                client.move_initial_pose_b()
                 client.checkPublisher()
             elif client.tcp_msg.data == "00000003":
                 print("Initial_setting_c")
-
+                client.move_initial_pose_c()
                 client.checkPublisher()
             elif client.tcp_msg.data == "00000004":
                 print("Initial_pose")
-
+                client.move_camera_pose(90)
                 client.move_camera_pose()
                 client.checkPublisher()
             elif client.tcp_msg.data == "00000005":
                 print("Charging pose")
-
+                charging_point = charging_down_pose()
                 client.checkPublisher()
             elif client.tcp_msg.data == "00000006":
                 print("UnCharging pose")
-
+                charging_up_pose(charging_point[0],charging_point[1],charging_point[2],charging_point[3],charging_point[4],charging_point[5],charging_point[6])
+                client.move_camera_pose(90)
                 client.checkPublisher()
             elif client.tcp_msg.data == "":
                 pass
