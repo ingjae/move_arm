@@ -145,45 +145,10 @@ class simple_move():
         current_joints = self.group.get_current_joint_values()
         return all_close(joint_goal, current_joints, 3)  
 
-    # second movement : View with Camera
-    def move_camera_pose(self):
-        group = self.group
-        joint_goal = group.get_current_joint_values()
-        
-        joint_goal[0] = 0.000
-        joint_goal[1] = -0.5794
-        joint_goal[2] = -0.3334
-        joint_goal[3] = 0.000
-        joint_goal[4] = 0.9424
-        joint_goal[5] = 0.000
-        group.go(joint_goal, wait=True)
-        rospy.sleep(2)
-
-        current_joints = self.group.get_current_joint_values()
-        return all_close(joint_goal, current_joints, 0.01)      
-
     # fifth movement : Entering the robot.
     def move_final_pose(self):
         group = self.group
         joint_goal = group.get_current_joint_values()
-
-        joint_goal[0] = -0.261799      # -15
-        joint_goal[1] = 0.226893       # 13
-        joint_goal[2] = -0.314159      # -18
-        joint_goal[3] = -0.0174533     # -1
-        joint_goal[4] = 0.10472        # 6
-        joint_goal[5] = -0.488692      # -28   
-        group.go(joint_goal, wait=True)
-        rospy.sleep(0.5)
-
-        joint_goal[0] = -0.820305      # -47
-        joint_goal[1] = -0.383972      # -22
-        joint_goal[2] = -0.471239      # -27
-        joint_goal[3] = -0.0174533     # -1
-        joint_goal[4] = 0.820305       # 47
-        joint_goal[5] = 0.767945       # 44
-        group.go(joint_goal, wait=True)
-        rospy.sleep(0.5)
 
         joint_goal[0] = -1.682497      # -96.4
         joint_goal[1] = -0.0418879     # -2.4
@@ -192,150 +157,87 @@ class simple_move():
         joint_goal[4] = -0.0663225     # -3.8
         joint_goal[5] = 0.0698132      # 4
         group.go(joint_goal, wait=True)
-        rospy.sleep(0.05)
+        rospy.sleep(3)
 
-        joint_goal[0] = -1.85005        # -106
-        joint_goal[1] = 0.4852015       # 27.8
-        joint_goal[2] = -0.13439        # -7.7
-        joint_goal[3] = -0.010472       # -0.6
-        joint_goal[4] = -0.3228859      # -18.5
-        joint_goal[5] = -0.13439        # -7.7
-        group.go(joint_goal, wait=True)
-        rospy.sleep(0.05)
+        # joint_goal[0] = -1.85005        # -106
+        # joint_goal[1] = 0.4852015       # 27.8
+        # joint_goal[2] = -0.13439        # -7.7
+        # joint_goal[3] = -0.010472       # -0.6
+        # joint_goal[4] = -0.3228859      # -18.5
+        # joint_goal[5] = -0.13439        # -7.7
+        # group.go(joint_goal, wait=True)
+        # rospy.sleep(0.05)
 
-        joint_goal[0] = -1.8116518      # -103.8
-        joint_goal[1] = 0.715585        # 41
-        joint_goal[2] = -0.1797689      # -10.3
-        joint_goal[3] = 0.000           # 0
-        joint_goal[4] = -0.5742133      # -32.9
-        joint_goal[5] = 0.0698132       # 4
-        group.go(joint_goal, wait=True)
-        rospy.sleep(1)
+        # joint_goal[0] = -1.8116518      # -103.8
+        # joint_goal[1] = 0.715585        # 41
+        # joint_goal[2] = -0.1797689      # -10.3
+        # joint_goal[3] = 0.000           # 0
+        # joint_goal[4] = -0.5742133      # -32.9
+        # joint_goal[5] = 0.0698132       # 4
+        # group.go(joint_goal, wait=True)
+        # rospy.sleep(1)
 
         current_joints = self.group.get_current_joint_values()
         return all_close(joint_goal, current_joints, 3)  
 
-    # 0(360) degree 
-    def zero_quarter_high(self):
-        group = self.group
-        joint_goal = group.get_current_joint_values()
+    def move_camera_pose(self,degree):
+        if degree == 0: # 0(360) degree
+            group = self.group
+            joint_goal = group.get_current_joint_values()
+            joint_goal[0] = -1.81514       # -104
+            joint_goal[1] = -0.5794
+            joint_goal[2] = -0.3334
+            joint_goal[3] = 0.000
+            joint_goal[4] = 0.9424
+            joint_goal[5] = 0.000
+            group.go(joint_goal, wait=True)
+            rospy.sleep(2)  
+            current_joints = self.group.get_current_joint_values()
+            return all_close(joint_goal, current_joints, 3)
 
-        joint_goal[0] = -1.81514       # -104
-        joint_goal[1] = 0.0349066      # 2
-        joint_goal[2] = -0.610865      # -35
-        joint_goal[3] = 0.000          # 0
-        joint_goal[4] = 0.541052       # 31
-        joint_goal[5] = 0.0698132      # 4
-        group.go(joint_goal, wait=True)
-        rospy.sleep(1)
+        elif degree == 90:  # 90 degree 
+            group = self.group
+            joint_goal = group.get_current_joint_values()
+            joint_goal[0] = -0.366519      # -21
+            joint_goal[1] = -0.5794
+            joint_goal[2] = -0.3334
+            joint_goal[3] = 0.000
+            joint_goal[4] = 0.9424
+            joint_goal[5] = 0.000
+            group.go(joint_goal, wait=True)
+            rospy.sleep(2)     
+            current_joints = self.group.get_current_joint_values()
+            return all_close(joint_goal, current_joints, 3)
 
-        joint_goal[0] = -1.81514       # -104
-        joint_goal[1] = 0.0349066      # 2
-        joint_goal[2] = -1.36136       # -78
-        joint_goal[3] = 0.000          # 0
-        joint_goal[4] = 1.29154        # 74
-        joint_goal[5] = 0.0698132      # 4
-        group.go(joint_goal, wait=True)
-        rospy.sleep(1)        
+        elif degree == 180:   # 180 degree 
+            group = self.group
+            joint_goal = group.get_current_joint_values()
+            joint_goal[0] = 1.309          # 75
+            joint_goal[1] = -0.5794
+            joint_goal[2] = -0.3334
+            joint_goal[3] = 0.000
+            joint_goal[4] = 0.9424
+            joint_goal[5] = 0.000
+            group.go(joint_goal, wait=True)
+            rospy.sleep(2)            
+            current_joints = self.group.get_current_joint_values()
+            return all_close(joint_goal, current_joints, 3)
 
-        current_joints = self.group.get_current_joint_values()
-        return all_close(joint_goal, current_joints, 3)
-
-    # 90 degree 
-    def one_quarter_high(self):
-        group = self.group
-        joint_goal = group.get_current_joint_values()
-
-        joint_goal[0] = -0.366519      # -21
-        joint_goal[1] = 0.0349066      # 2
-        joint_goal[2] = -0.610865      # -35
-        joint_goal[3] = 0.000          # 0
-        joint_goal[4] = 0.541052       # 31
-        joint_goal[5] = 0.0698132      # 4
-        group.go(joint_goal, wait=True)
-        rospy.sleep(1)
-
-        joint_goal[0] = -0.366519      # -21
-        joint_goal[1] = 0.0349066      # 2
-        joint_goal[2] = -1.36136       # -78
-        joint_goal[3] = 0.000          # 0
-        joint_goal[4] = 1.29154        # 74
-        joint_goal[5] = 0.0698132      # 4
-        group.go(joint_goal, wait=True)
-        rospy.sleep(1)        
-
-        current_joints = self.group.get_current_joint_values()
-        return all_close(joint_goal, current_joints, 3)
-
-    # 180 degree 
-    def two_quarter_high(self):
-        group = self.group
-        joint_goal = group.get_current_joint_values()
-
-        joint_goal[0] = -0.366519      # -21
-        joint_goal[1] = 0.0349066      # 2
-        joint_goal[2] = -0.610865      # -35
-        joint_goal[3] = 0.000          # 0
-        joint_goal[4] = 0.541052       # 31
-        joint_goal[5] = 0.0698132      # 4
-        group.go(joint_goal, wait=True)
-        rospy.sleep(1)
-
-        joint_goal[0] = 1.309          # 75
-        joint_goal[1] = 0.0349066      # 2
-        joint_goal[2] = -0.610865      # -35
-        joint_goal[3] = 0.000          # 0
-        joint_goal[4] = 0.541052       # 31
-        joint_goal[5] = 0.0698132      # 4
-        group.go(joint_goal, wait=True)
-        rospy.sleep(1)
-
-        joint_goal[0] = 1.309          # -75
-        joint_goal[1] = 0.0349066      # 2
-        joint_goal[2] = -1.36136       # -78
-        joint_goal[3] = 0.000          # 0
-        joint_goal[4] = 1.29154        # 74
-        joint_goal[5] = 0.0698132      # 4
-        group.go(joint_goal, wait=True)
-        rospy.sleep(1)        
-
-        current_joints = self.group.get_current_joint_values()
-        return all_close(joint_goal, current_joints, 3)
-
-    # 270 degree 
-    def three_quarter_high(self):
-        group = self.group
-        joint_goal = group.get_current_joint_values()
-
-        joint_goal[0] = -0.366519      # -21
-        joint_goal[1] = 0.0349066      # 2
-        joint_goal[2] = -0.610865      # -35
-        joint_goal[3] = 0.000          # 0
-        joint_goal[4] = 0.541052       # 31
-        joint_goal[5] = 0.0698132      # 4
-        group.go(joint_goal, wait=True)
-        rospy.sleep(1)
-
-        joint_goal[0] = 2.79253        # 160
-        joint_goal[1] = 0.0349066      # 2
-        joint_goal[2] = -0.610865      # -35
-        joint_goal[3] = 0.000          # 0
-        joint_goal[4] = 0.541052       # 31
-        joint_goal[5] = 0.0698132      # 4
-        group.go(joint_goal, wait=True)
-        rospy.sleep(1)
-
-        joint_goal[0] = 2.79253        # 160
-        joint_goal[1] = 0.0349066      # 2
-        joint_goal[2] = -1.36136       # -78
-        joint_goal[3] = 0.000          # 0
-        joint_goal[4] = 1.29154        # 74
-        joint_goal[5] = 0.0698132      # 4
-        group.go(joint_goal, wait=True)
-        rospy.sleep(1)        
-
-        current_joints = self.group.get_current_joint_values()
-        return all_close(joint_goal, current_joints, 3)
+        elif degree == 270:  # 270 degree 
+            group = self.group
+            joint_goal = group.get_current_joint_values()
+            joint_goal[0] = 2.79253        # 160
+            joint_goal[1] = -0.5794
+            joint_goal[2] = -0.3334
+            joint_goal[3] = 0.000
+            joint_goal[4] = 0.9424
+            joint_goal[5] = 0.000
+            group.go(joint_goal, wait=True)
+            rospy.sleep(3)            
+            current_joints = self.group.get_current_joint_values()
+            return all_close(joint_goal, current_joints, 3)
+        else:
+            print("you select the wrong pose")
 
 # marker(fidicial static_tansform) lookup 
 def lookup_trans_tar():
@@ -397,26 +299,21 @@ def move_charging_pose():
 def main():
     Xarm6 = simple_move()
     
-    # Xarm6.move_final_pose()
 
     # print("---start---")
     # Xarm6.move_initial_pose()
     
     # print("---second---")
-    # Xarm6.move_camera_pose() # camera pose
     
     # print("---third---")
     # move_charging_pose()
     
     # print("---final---")
     # Xarm6.move_final_pose()
-    
-    
-    # Xarm6.zero_quarter_high()
-    # Xarm6.one_quarter_high()
-    # Xarm6.two_quarter_high()
-    # Xarm6.three_quarter_high()
 
+    Xarm6.move_camera_pose(90) # camera pose
+
+    # Xarm6.move_final_pose()
 
 if __name__=="__main__":
     try:
