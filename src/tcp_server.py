@@ -37,16 +37,19 @@ if __name__=="__main__":
                 buffer=connectionSock.recv(tcp_server.BUFFER)
                 # print buf
                 tcp_server.pub.publish(buffer)
-                
+                tcp_server.check = False
+                while True :
+                        if tcp_server.check = True:
+                            break
+                        else:
+                            pass
                 if buffer = "00000001":
-                    rospy.sleep(20)#sleep time
                     if tcp_server.check == True:
                         connectionSock.send('00000101')
                         tcp_server.check = False
                     else:
                         connectionSock.send('00000001')
                 elif buffer = "00000002":
-                    rospy.sleep(20)
                     if tcp_server.check == True:
                         connectionSock.send('00000102')
                         tcp_server.check = False
@@ -54,21 +57,18 @@ if __name__=="__main__":
                         connectionSock.send('00000002')
                     
                 elif buffer = "00000003":
-                    rospy.sleep(20)
                     if tcp_server.check == True:
                         connectionSock.send('00000103')
                         tcp_server.check = False
                     else:
                         connectionSock.send('00000003')
                 elif buffer = "00000004":
-                    rospy.sleep(20)
                     if tcp_server.check == True:
                         connectionSock.send('00000104')
                         tcp_server.check = False
                     else:
                         connectionSock.send('00000004')
                 elif buffer = "00000005":
-                    rospy.sleep(20)
                     if tcp_server.check == True:
                         connectionSock.send('00000105')
                         tcp_server.check = False
@@ -76,7 +76,9 @@ if __name__=="__main__":
                         connectionSock.send('00000005')
                     
                 else:
-                    pass
+                    print("error")
+
+                  
                     
             except socket.timeout:
                 print 'time out'
