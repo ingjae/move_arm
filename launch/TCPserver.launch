@@ -1,7 +1,7 @@
 <launch> 
   <!-- target point publisher -->
-  <node pkg="move_arm" type="tcp_client.py" name="tcp_client" />
+  <node pkg="move_arm" type="clavis_xarm_client.py" name="clavis_xarm_client" />
 
   <!-- TF publisher -->
-  <node pkg="move_arm" type="tcp_server.py" name="tcp_server" />
+  <node pkg="move_arm" type="clavis_tcp_server.py" name="clavis_tcp_server" />
 </launch>
