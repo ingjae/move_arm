@@ -79,6 +79,13 @@ if __name__=="__main__":
                         tcp_server.check = False
                     else:
                         connectionSock.send('00000005')
+                elif buffer == "00000006":
+                    
+                    if tcp_server.check == True:
+                        connectionSock.send('00000106')
+                        tcp_server.check = False
+                    else:
+                        connectionSock.send('00000006')
                     
                 else:
                     pass
