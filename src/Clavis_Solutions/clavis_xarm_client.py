@@ -282,27 +282,27 @@ if __name__=="__main__":
         client = MoveClient()
         while not rospy.is_shutdown():
             # print(tcp.tcp_msg)
-            if client.tcp_msg.data == "00000001":
+            if client.tcp_msg.data == "0001":
                 print("Initial_setting_a")
                 client.move_initial_pose_a()
                 client.checkPublisher()
-            elif client.tcp_msg.data == "00000002":
+            elif client.tcp_msg.data == "0002":
                 print("Initial_setting_b")
                 client.move_initial_pose_b()
                 client.checkPublisher()
-            elif client.tcp_msg.data == "00000003":
+            elif client.tcp_msg.data == "0003":
                 print("Initial_setting_c")
                 client.move_initial_pose_c()
                 client.checkPublisher()
-            elif client.tcp_msg.data == "00000004":
+            elif client.tcp_msg.data == "0004":
                 print("Initial_camera_pose")
                 client.move_camera_pose(90)
                 client.checkPublisher()
-            elif client.tcp_msg.data == "00000005":
+            elif client.tcp_msg.data == "0005":
                 print("Charging pose")
                 charging_point = charging_down_pose()
                 client.checkPublisher()
-            elif client.tcp_msg.data == "00000006":
+            elif client.tcp_msg.data == "0006":
                 print("UnCharging pose")
                 charging_up_pose(charging_point[0],charging_point[1],charging_point[2],charging_point[3],charging_point[4],charging_point[5],charging_point[6])
                 client.checkPublisher()
