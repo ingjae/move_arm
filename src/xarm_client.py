@@ -61,6 +61,13 @@ class MoveClient(object):
         self.once = False
         self.is_finished = False
     
+    def tcpCallback(self, msg):
+        self.tcp_msg = msg
+
+    def checkPublisher(self):
+        self.is_finished = True
+        self.finish_pub.publish(self.is_finished)
+        self.is_finished = False
     # xarm
     def move_pose(self,pos_x,pos_y,pos_z,ori_x,ori_y,ori_z,ori_w):  # move
         group = self.group
@@ -276,29 +283,28 @@ if __name__=="__main__":
         while not rospy.is_shutdown():
             # print(tcp.tcp_msg)
             if client.tcp_msg.data == "00000001":
-                rospy.logwarn("Initial_setting_a")
-
+                print("Initial_setting_a")
+                client.move_initial_pose_a()
                 client.checkPublisher()
             elif client.tcp_msg.data == "00000002":
-                rospy.logwarn("Initial_setting_b")
-
+                print("Initial_setting_b")
+                client.move_initial_pose_b()
                 client.checkPublisher()
             elif client.tcp_msg.data == "00000003":
-                rospy.logwarn("Initial_setting_c")
-
+                print("Initial_setting_c")
+                client.move_initial_pose_c()
                 client.checkPublisher()
             elif client.tcp_msg.data == "00000004":
-                rospy.logwarn("Initial_pose")
-
-                client.move_camera_pose()
+                print("Initial_camera_pose")
+                client.move_camera_pose(90)
                 client.checkPublisher()
             elif client.tcp_msg.data == "00000005":
-                rospy.logwarn("Charging pose")
-
+                print("Charging pose")
+                charging_point = charging_down_pose()
                 client.checkPublisher()
             elif client.tcp_msg.data == "00000006":
-                rospy.logwarn("UnCharging pose")
-
+                print("UnCharging pose")
+                charging_up_pose(charging_point[0],charging_point[1],charging_point[2],charging_point[3],charging_point[4],charging_point[5],charging_point[6])
                 client.checkPublisher()
             elif client.tcp_msg.data == "":
                 pass
