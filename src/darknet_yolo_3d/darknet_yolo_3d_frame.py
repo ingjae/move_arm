@@ -49,7 +49,6 @@ class ObjectFrame(object):
         try:
 
             (trans,rot) = self.camera_link_listener.lookupTransform('/world','/camera_link', rospy.Time(0))
-            print('lookup')
         except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
             return 0
         
@@ -78,8 +77,6 @@ class ObjectFrame(object):
         self.pose.pose.position = self.frame_position
         self.pose.pose.orientation = self.frame_orientation
 
-
-        
         self.frame_pub.publish(self.pose)
 
 
@@ -92,8 +89,6 @@ if __name__=="__main__":
         target_frame = ObjectFrame()
 
         while not rospy.is_shutdown():
-            print ("frame_pub1")
-
             target_frame.pub_frame()
             rate.sleep()
     except Exception as e:

@@ -33,10 +33,6 @@ def init_node():
     rospy.init_node('button_point_publisher')
     bounding_boxes_3d_sub = rospy.Subscriber('/darknet_ros_3d/bounding_boxes', BoundingBoxes3d, cb_bounding_boxes_3d)
     
-
-
-
-
     rospy.set_param('button',-1) # 아무것도 계산하지 않음
     # rospy.set_param('button',12) # 테스트
     rate = rospy.Rate(1.0)
@@ -89,7 +85,7 @@ def cb_bounding_boxes_3d(data):
             break
         elif (selected_button ==  12 and temp_class == "4F"):
             target_button = count
-            print("target : ",selected_button)
+            # print("target : ",selected_button)
             break
         elif (selected_button ==  14 and temp_class == "5F"):
             target_button = count
@@ -108,13 +104,12 @@ def cb_bounding_boxes_3d(data):
             # print("target : ",selected_button)
             break
 
-        else:
-            
+        else:   
             target_button = -1
             pass
    
     if((target_button != -1) and (len(box_data.bounding_boxes) >= target_button)):
-        print (box_data.bounding_boxes,target_button)
+        # print (box_data.bounding_boxes,target_button)
         target_x_min = box_data.bounding_boxes[target_button].xmin
         target_x_max = box_data.bounding_boxes[target_button].xmax
         target_y_min = box_data.bounding_boxes[target_button].ymin
@@ -128,8 +123,6 @@ def cb_bounding_boxes_3d(data):
         float(target_y_max) 
         float(target_z_min) 
         float(target_z_max) 
-
-
         
         target_center_y = (target_y_min+target_y_max)/2
         target_center_z = (target_z_min+target_z_max)/2
@@ -146,7 +139,7 @@ def cb_bounding_boxes_3d(data):
 
 if __name__=="__main__":    
     try:
-        print("point init")
+        # print("point init")
 
         target_button = -1 
         init_node()
