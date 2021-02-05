@@ -411,30 +411,25 @@ if __name__=="__main__":
             if tcp.tcp_msg.data == "00000001":
                 print("Moving Out Position")
                 tcp.move_initial_pose()
-                time.sleep(8)
                 tcp.checkPublisher()
             elif tcp.tcp_msg.data == "00000002":
                 print("QR Position and Calculate TF")
                 tcp.move_camera_pose()
-                time.sleep(5)
                 tcp.checkPublisher()
             elif tcp.tcp_msg.data == "00000003":
                 print("Charging Position")
                 # check the charging pose
                 charging_point = move_charging_pose()
-                time.sleep(5)
                 tcp.checkPublisher()
             elif tcp.tcp_msg.data == "00000004":
                 print("Waiting Position")
                 up_from_charging(charging_point[0],charging_point[1],charging_point[2],charging_point[3],charging_point[4],charging_point[5],charging_point[6])
                 tcp.move_camera_pose()
-                time.sleep(5)
                 tcp.checkPublisher()
             elif tcp.tcp_msg.data == "00000005":
                 print("Movig In Position")
                 up_from_charging(charging_point[0],charging_point[1],charging_point[2],charging_point[3],charging_point[4],charging_point[5],charging_point[6])
                 tcp.move_final_pose()
-                time.sleep(5)
                 tcp.checkPublisher()
             elif tcp.tcp_msg.data == "":
                 pass
