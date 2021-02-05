@@ -61,6 +61,13 @@ class MoveClient(object):
         self.once = False
         self.is_finished = False
     
+    def tcpCallback(self, msg):
+        self.tcp_msg = msg
+
+    def checkPublisher(self):
+        self.is_finished = True
+        self.finish_pub.publish(self.is_finished)
+        self.is_finished = False
     # xarm
     def move_pose(self,pos_x,pos_y,pos_z,ori_x,ori_y,ori_z,ori_w):  # move
         group = self.group
@@ -288,9 +295,8 @@ if __name__=="__main__":
                 client.move_initial_pose_c()
                 client.checkPublisher()
             elif client.tcp_msg.data == "00000004":
-                print("Initial_pose")
+                print("Initial_camera_pose")
                 client.move_camera_pose(90)
-                client.move_camera_pose()
                 client.checkPublisher()
             elif client.tcp_msg.data == "00000005":
                 print("Charging pose")
@@ -299,7 +305,6 @@ if __name__=="__main__":
             elif client.tcp_msg.data == "00000006":
                 print("UnCharging pose")
                 charging_up_pose(charging_point[0],charging_point[1],charging_point[2],charging_point[3],charging_point[4],charging_point[5],charging_point[6])
-                client.move_camera_pose(90)
                 client.checkPublisher()
             elif client.tcp_msg.data == "":
                 pass
