@@ -28,6 +28,14 @@ def all_close(goal, actual, tolerance):
     return all_close(pose_to_list(goal), pose_to_list(actual), tolerance)
   return True
 
+def compare_joint_values(current_values_list,values_list,tolerance):
+    if (abs(current_values_list[0]-values_list[0]) < tolerance) and (abs(current_values_list[1]-values_list[1]) < tolerance) and \
+    (abs(current_values_list[2]-values_list[2]) < tolerance) and (abs(current_values_list[3]-values_list[3]) < tolerance) and \
+    (abs(current_values_list[4]-values_list[4]) < tolerance) and (abs(current_values_list[5]-values_list[5]) < tolerance) == True:
+        return True
+    else:
+        return False
+    
 ## move client 
 class MoveClient(object):
     def __init__(self):
@@ -49,25 +57,40 @@ class MoveClient(object):
         self.group = group
         self.display_trajectory_publisher = display_trajectory_publisher
 
-        self.OFFSET_X = 0.0
-        self.OFFSET_Y = 0.0
-        self.OFFSET_Z = 0.0
-        
-        # client
+        # Setting Joint Values
+        self.init_a_list = [-1.8116518, 0.715585, -0.1797689, 0.000, -0.5742133, 0.0698132 ]
+        self.init_b_list = [-1.85005, 0.4852015, -0.13439, -0.010472, -0.3228859, -0.13439 ]
+        self.init_c_list = [-1.682497,-0.0418879,0.101229,-0.146608,-0.0663225,0.0698132 ]   
+        self.ready_0_list = [-1.81514, -0.5794, -0.3334, 0.000, 0.9424, 0.000 ]
+        self.ready_90_list = [-0.366519, -0.5794, -0.3334, 0.000, 0.9424, 0.000 ]
+        self.ready_180_list = [1.309 , -0.5794, -0.3334, 0.000, 0.9424, 0.000 ]
+        self.ready_270_list = [2.79253 , -0.5794, -0.3334, 0.000, 0.9424, 0.000 ]
+
+
+        # Client
+        self.all_0_list = [0,0,0,0,0,0]
         self.tcp_sub = rospy.Subscriber('tcptopic', String, self.tcpCallback)
         self.tcp_msg = String()
-        self.finish_pub = rospy.Publisher('is_finished',Bool,queue_size=10)
+        self.finish_pub = rospy.Publisher('is_finished',Bool,queue_size=10) # 
+        self.check_pub = rospy.Publisher('check',Int,queue_size=10) # 
         self.rate = rospy.Rate(1.0)
         self.once = False
         self.is_finished = False
-    
+        self.checked = 0
+
     def tcpCallback(self, msg):
         self.tcp_msg = msg
 
-    def checkPublisher(self):
+    def finishPublisher(self):
         self.is_finished = True
         self.finish_pub.publish(self.is_finished)
         self.is_finished = False
+
+    def checkPublisher(self,checked_list): 
+        if checked_list == 
+        self.checked = 
+
+        
     # xarm
     def move_pose(self,pos_x,pos_y,pos_z,ori_x,ori_y,ori_z,ori_w):  # move
         group = self.group
@@ -113,12 +136,12 @@ class MoveClient(object):
     def move_initial_pose_a(self):
         group = self.group
         joint_goal = group.get_current_joint_values()
-        joint_goal[0] = -1.8116518      # -103.8
-        joint_goal[1] = 0.715585        # 41
-        joint_goal[2] = -0.1797689      # -10.3
-        joint_goal[3] = 0.000           # 0
-        joint_goal[4] = -0.5742133      # -32.9
-        joint_goal[5] = 0.0698132       # 4
+        joint_goal[0] = self.init_a_list[0]      # -103.8
+        joint_goal[1] = self.init_a_list[1]        # 41
+        joint_goal[2] = self.init_a_list[2]      # -10.3
+        joint_goal[3] = self.init_a_list[3]           # 0
+        joint_goal[4] = self.init_a_list[4]      # -32.9
+        joint_goal[5] = self.init_a_list[5]       # 4
         group.go(joint_goal, wait=True)
         rospy.sleep(1)
         current_joints = self.group.get_current_joint_values()
@@ -127,12 +150,12 @@ class MoveClient(object):
     def move_initial_pose_b(self):
         group = self.group
         joint_goal = group.get_current_joint_values()
-        joint_goal[0] = -1.85005        # -106
-        joint_goal[1] = 0.4852015       # 27.8
-        joint_goal[2] = -0.13439        # -7.7
-        joint_goal[3] = -0.010472       # -0.6
-        joint_goal[4] = -0.3228859      # -18.5
-        joint_goal[5] = -0.13439        # -7.7
+        joint_goal[0] = self.init_b_list[0]        # -106
+        joint_goal[1] = self.init_b_list[1]       # 27.8
+        joint_goal[2] = self.init_b_list[2]        # -7.7
+        joint_goal[3] = self.init_b_list[3]       # -0.6
+        joint_goal[4] = self.init_b_list[4]      # -18.5
+        joint_goal[5] = self.init_b_list[5]        # -7.7
         group.go(joint_goal, wait=True)
         rospy.sleep(0.05)
         current_joints = self.group.get_current_joint_values()
@@ -141,12 +164,12 @@ class MoveClient(object):
     def move_initial_pose_c(self):
         group = self.group
         joint_goal = group.get_current_joint_values()
-        joint_goal[0] = -1.682497       # -96.4
-        joint_goal[1] = -0.0418879      # -2.4
-        joint_goal[2] = 0.101229        # 5.8
-        joint_goal[3] = -0.146608       # -8.4
-        joint_goal[4] = -0.0663225      # -3.8
-        joint_goal[5] = 0.0698132       # 4
+        joint_goal[0] = self.init_c_list[0]       # -96.4
+        joint_goal[1] = self.init_c_list[1]      # -2.4
+        joint_goal[2] = self.init_c_list[2]        # 5.8
+        joint_goal[3] = self.init_c_list[3]       # -8.4
+        joint_goal[4] = self.init_c_list[4]      # -3.8
+        joint_goal[5] = self.init_c_list[5]       # 4
         group.go(joint_goal, wait=True)
         rospy.sleep(3)
         current_joints = self.group.get_current_joint_values()
@@ -156,12 +179,12 @@ class MoveClient(object):
         if degree == 0: # 0(360) degree
             group = self.group
             joint_goal = group.get_current_joint_values()
-            joint_goal[0] = -1.81514       # -104
-            joint_goal[1] = -0.5794
-            joint_goal[2] = -0.3334
-            joint_goal[3] = 0.000
-            joint_goal[4] = 0.9424
-            joint_goal[5] = 0.000
+            joint_goal[0] = self.ready_0_list[0]       # -104
+            joint_goal[1] = self.ready_0_list[1]
+            joint_goal[2] = self.ready_0_list[2]
+            joint_goal[3] = self.ready_0_list[3]
+            joint_goal[4] = self.ready_0_list[4]
+            joint_goal[5] = self.ready_0_list[5]
             group.go(joint_goal, wait=True)
             rospy.sleep(2)  
             current_joints = self.group.get_current_joint_values()
@@ -170,12 +193,12 @@ class MoveClient(object):
         elif degree == 90:  # 90 degree 
             group = self.group
             joint_goal = group.get_current_joint_values()
-            joint_goal[0] = -0.366519      # -21
-            joint_goal[1] = -0.5794
-            joint_goal[2] = -0.3334
-            joint_goal[3] = 0.000
-            joint_goal[4] = 0.9424
-            joint_goal[5] = 0.000
+            joint_goal[0] = self.ready_90_list[0]      # -21
+            joint_goal[1] = self.ready_90_list[1]
+            joint_goal[2] = self.ready_90_list[2]
+            joint_goal[3] = self.ready_90_list[3]
+            joint_goal[4] = self.ready_90_list[4]
+            joint_goal[5] = self.ready_90_list[5]
             group.go(joint_goal, wait=True)
             rospy.sleep(2)     
             current_joints = self.group.get_current_joint_values()
@@ -184,12 +207,12 @@ class MoveClient(object):
         elif degree == 180:   # 180 degree 
             group = self.group
             joint_goal = group.get_current_joint_values()
-            joint_goal[0] = 1.309          # 75
-            joint_goal[1] = -0.5794
-            joint_goal[2] = -0.3334
-            joint_goal[3] = 0.000
-            joint_goal[4] = 0.9424
-            joint_goal[5] = 0.000
+            joint_goal[0] = self.ready_180_list[0]        # 75
+            joint_goal[1] = self.ready_180_list[1]
+            joint_goal[2] = self.ready_180_list[2]
+            joint_goal[3] = self.ready_180_list[3]
+            joint_goal[4] = self.ready_180_list[4]
+            joint_goal[5] = self.ready_180_list[5]
             group.go(joint_goal, wait=True)
             rospy.sleep(2)            
             current_joints = self.group.get_current_joint_values()
@@ -198,12 +221,12 @@ class MoveClient(object):
         elif degree == 270:  # 270 degree 
             group = self.group
             joint_goal = group.get_current_joint_values()
-            joint_goal[0] = 2.79253        # 160
-            joint_goal[1] = -0.5794
-            joint_goal[2] = -0.3334
-            joint_goal[3] = 0.000
-            joint_goal[4] = 0.9424
-            joint_goal[5] = 0.000
+            joint_goal[0] = self.ready_270_list[0]        # 160
+            joint_goal[1] = self.ready_270_list[1]
+            joint_goal[2] = self.ready_270_list[2]
+            joint_goal[3] = self.ready_270_list[3]
+            joint_goal[4] = self.ready_270_list[4]
+            joint_goal[5] = self.ready_270_list[5]
             group.go(joint_goal, wait=True)
             rospy.sleep(3)            
             current_joints = self.group.get_current_joint_values()
@@ -275,6 +298,13 @@ def charging_down_pose():
     rospy.sleep(1.5)
     return(tar_trans[0],tar_trans[1],tar_trans[2],new_rot[0],new_rot[1],new_rot[2],new_rot[3])
 
+
+    
+
+
+
+
+
 if __name__=="__main__":    
     try:
         rospy.init_node('move_client')
@@ -285,39 +315,61 @@ if __name__=="__main__":
             if client.tcp_msg.data == "0010":
                 print("Initial_setting_a")
                 client.move_initial_pose_a()
-                client.checkPublisher()
+                client.finishPublisher()
             elif client.tcp_msg.data == "0020":
                 print("Initial_setting_b")
                 client.move_initial_pose_b()
-                client.checkPublisher()
+                client.finishPublisher()
             elif client.tcp_msg.data == "0030":
                 print("Initial_setting_c")
                 client.move_initial_pose_c()
-                client.checkPublisher()
+                client.finishPublisher()
             elif client.tcp_msg.data == "0110":
                 print("Initial_camera_pose")
                 client.move_camera_pose(0)
-                client.checkPublisher()
+                client.finishPublisher()
             elif client.tcp_msg.data == "0120":
                 print("Initial_camera_pose")
                 client.move_camera_pose(90)
-                client.checkPublisher()
+                client.finishPublisher()
             elif client.tcp_msg.data == "0130":
                 print("Initial_camera_pose")
                 client.move_camera_pose(180)
-                client.checkPublisher()
+                client.finishPublisher()
             elif client.tcp_msg.data == "0140":
                 print("Initial_camera_pose")
                 client.move_camera_pose(270)
-                client.checkPublisher()
+                client.finishPublisher()
             elif client.tcp_msg.data == "0210":
                 print("Charging pose")
                 charging_point = charging_down_pose()
-                client.checkPublisher()
+                client.finishPublisher()
             elif client.tcp_msg.data == "0220":
                 print("UnCharging pose")
                 charging_up_pose(charging_point[0],charging_point[1],charging_point[2],charging_point[3],charging_point[4],charging_point[5],charging_point[6])
-                client.checkPublisher()
+                client.finishPublisher()
+            elif client.tcp_msg.data == "0300": #checking joint state
+                print("Checking Joint state")
+                current_joints = self.group.get_current_joint_values()
+                if compare_joint_values(current_joints,self.init_a_list,0.01) == True: # tolerance 0.01 
+                    client.checkPublisher(self.init_a_list)
+                elif compare_joint_values(current_joints,self.init_b_list,0.01) == True: # tolerance 0.01 
+                    client.checkPublisher(self.init_b_list)
+                elif compare_joint_values(current_joints,self.init_c_list,0.01) == True: # tolerance 0.01 
+                    client.checkPublisher(self.init_c_list)
+                elif compare_joint_values(current_joints,self.ready_0_list,0.01) == True: # tolerance 0.01 
+                    client.checkPublisher(self.ready_0_list)
+                elif compare_joint_values(current_joints,self.ready_90_list,0.01) == True: # tolerance 0.01 
+                    client.checkPublisher(self.ready_90_list)
+                elif compare_joint_values(current_joints,self.ready_180_list,0.01) == True: # tolerance 0.01 
+                    client.checkPublisher(self.ready_180_list)
+                elif compare_joint_values(current_joints,self.ready_270_list,0.01) == True: # tolerance 0.01 
+                    client.checkPublisher(self.ready_270_list)
+                else:
+                    client.checkPublisher(self.all_0_list)
+
+
+                
             elif client.tcp_msg.data == "":
                 pass
             else:

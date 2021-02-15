@@ -12,11 +12,19 @@ class TCPServer(object):
         self.BUFFER=4096
         self.RATE = rospy.Rate(10)              
         self.pub=rospy.Publisher('tcptopic',String,queue_size=10)
-        self.sub = rospy.Subscriber('is_finished', Bool,self.checkCallback)
-        self.check = False
+        self.sub = rospy.Subscriber('is_finished', Bool ,self.finishCallback) # Bool to uint 8 
+        self.sub = rospy.Subscriber('check', Int ,self.checkCallback) # Bool to uint 8 
+
+        self.finish = False # is_finished?
+        self.check = False # new!! checking joint state
+
 
     def checkCallback(self, msg):
         self.check = msg.data
+
+    def finishCallback(self, msg):
+        self.finish = msg.data
+        
 
 
 if __name__=="__main__":    
@@ -37,75 +45,83 @@ if __name__=="__main__":
                 buffer=connectionSock.recv(tcp_server.BUFFER)
                 # print buf
                 tcp_server.pub.publish(buffer)
-                tcp_server.check = False
+                tcp_server.finish = False
                 while True :
-                    if tcp_server.check == True:
+                    if tcp_server.finish == True:
                         break
                     else:
                         pass
                 if buffer =="0010": 
-                    if tcp_server.check == True:
+                    if tcp_server.finish == True:
                         connectionSock.send('0011')
-                        tcp_server.check = False
+                        tcp_server.finish = False
                     else:
                         connectionSock.send('0012')
                 elif buffer == "0020":
                    
-                    if tcp_server.check == True:
+                    if tcp_server.finish == True:
                         connectionSock.send('0021')
-                        tcp_server.check = False
+                        tcp_server.finish = False
                     else:
                         connectionSock.send('0022')
                     
                 elif buffer == "0030":
                  
-                    if tcp_server.check == True:
+                    if tcp_server.finish == True:
                         connectionSock.send('0031')
-                        tcp_server.check = False
+                        tcp_server.finish = False
                     else:
                         connectionSock.send('0032')
                 elif buffer == "0110":
                     
-                    if tcp_server.check == True:
+                    if tcp_server.finish == True:
                         connectionSock.send('0111')
-                        tcp_server.check = False
+                        tcp_server.finish = False
                     else:
                         connectionSock.send('0112')
                 elif buffer == "0120":
                     
-                    if tcp_server.check == True:
+                    if tcp_server.finish == True:
                         connectionSock.send('0121')
-                        tcp_server.check = False
+                        tcp_server.finish = False
                     else:
                         connectionSock.send('0122')
                 elif buffer == "0130":
                     
-                    if tcp_server.check == True:
+                    if tcp_server.finish == True:
                         connectionSock.send('0131')
-                        tcp_server.check = False
+                        tcp_server.finish = False
                     else:
                         connectionSock.send('0132')
                 elif buffer == "0140":
                     
-                    if tcp_server.check == True:
+                    if tcp_server.finish == True:
                         connectionSock.send('0141')
-                        tcp_server.check = False
+                        tcp_server.finish = False
                     else:
                         connectionSock.send('0142')
 
                 elif buffer == "0210":
                     
-                    if tcp_server.check == True:
+                    if tcp_server.finish == True:
                         connectionSock.send('0211')
-                        tcp_server.check = False
+                        tcp_server.finish = False
                     else:
                         connectionSock.send('0212')
 
                 elif buffer == "0220":
                     
-                    if tcp_server.check == True:
+                    if tcp_server.finish == True:
                         connectionSock.send('0221')
-                        tcp_server.check = False
+                        tcp_server.finish = False
+                    else:
+                        connectionSock.send('0222')
+                # Add checking joint state Protocol
+                elif buffer == "0300":  
+                    
+                    if tcp_server.finish == True:
+                        connectionSock.send('0221')
+                        tcp_server.finish = False
                     else:
                         connectionSock.send('0222')
                     
