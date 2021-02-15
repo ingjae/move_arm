@@ -12,11 +12,10 @@ class TCPServer(object):
         self.BUFFER=4096
         self.RATE = rospy.Rate(10)              
         self.pub=rospy.Publisher('tcptopic',String,queue_size=10)
-        self.sub = rospy.Subscriber('is_finished', Bool ,self.finishCallback) # Bool to uint 8 
-        self.sub = rospy.Subscriber('check', Int ,self.checkCallback) # Bool to uint 8 
-
+        self.sub = rospy.Subscriber('is_finished', Bool ,self.finishCallback) 
+        self.sub = rospy.Subscriber('check', Int ,self.checkCallback) 
         self.finish = False # is_finished?
-        self.check = False # new!! checking joint state
+        self.check = 0 # new!! checking joint state
 
 
     def checkCallback(self, msg):
@@ -118,13 +117,34 @@ if __name__=="__main__":
                         connectionSock.send('0222')
                 # Add checking joint state Protocol
                 elif buffer == "0300":  
-                    
-                    if tcp_server.finish == True:
-                        connectionSock.send('0221')
-                        tcp_server.finish = False
-                    else:
-                        connectionSock.send('0222')
-                    
+                    # sleep(1) #sleep when code is not working  
+                    if tcp_server.check == 0: # error code 
+                        connectionSock.send('0320')
+                        tcp_server.finish = 0
+                    elif tcp_server.check == 1: # init pose a
+                        connectionSock.send('0301')
+                        tcp_server.finish = 0
+                    elif tcp_server.check == 2: # init pose b
+                        connectionSock.send('0302')
+                        tcp_server.finish = 0
+                    elif tcp_server.check == 3: # init pose c
+                        connectionSock.send('0303')
+                        tcp_server.finish = 0
+                    elif tcp_server.check == 4: # ready pose 0
+                        connectionSock.send('0311')
+                        tcp_server.finish = 0
+                    elif tcp_server.check == 5: # ready pose 90
+                        connectionSock.send('0312')
+                        tcp_server.finish = 0
+                    elif tcp_server.check == 6: # ready pose 180
+                        connectionSock.send('0313')
+                        tcp_server.finish = 0
+                    elif tcp_server.check == 7: # ready pose 270
+                        connectionSock.send('0314')
+                        tcp_server.finish = 0
+                    else: # protocol error 
+                        connectionSock.send('0321')
+                        tcp_server.finish = 0
                 else:
                     pass
                     
