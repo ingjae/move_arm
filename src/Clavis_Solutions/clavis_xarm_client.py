@@ -57,7 +57,7 @@ class MoveClient(object):
         self.group = group
         self.display_trajectory_publisher = display_trajectory_publisher
 
-        # Setting Joint Values
+        # Setting Joint Values [YOU SHUOLD CHANGE HERE]#############################################
         self.init_a_list = [-1.8116518, 0.715585, -0.1797689, 0.000, -0.5742133, 0.0698132 ]
         self.init_b_list = [-1.85005, 0.4852015, -0.13439, -0.010472, -0.3228859, -0.13439 ]
         self.init_c_list = [-1.682497,-0.0418879,0.101229,-0.146608,-0.0663225,0.0698132 ]   
@@ -65,7 +65,7 @@ class MoveClient(object):
         self.ready_90_list = [-0.366519, -0.5794, -0.3334, 0.000, 0.9424, 0.000 ]
         self.ready_180_list = [1.309 , -0.5794, -0.3334, 0.000, 0.9424, 0.000 ]
         self.ready_270_list = [2.79253 , -0.5794, -0.3334, 0.000, 0.9424, 0.000 ]
-
+        #############################################################################################
 
         # Client
         self.all_0_list = [0,0,0,0,0,0]
@@ -87,10 +87,40 @@ class MoveClient(object):
         self.is_finished = False
 
     def checkPublisher(self,checked_list): 
-        if checked_list == 
-        self.checked = 
-
-        
+        if checked_list == self.init_a_list :
+            self.checked = 1
+            self.check_pub.publish(self.checked)
+            self.checked = 0
+        elif checked_list == self.init_b_list : 
+            self.checked = 2
+            self.check_pub.publish(self.checked)
+            self.checked = 0
+        elif checked_list == self.init_c_list : 
+            self.checked = 3
+            self.check_pub.publish(self.checked)
+            self.checked = 0
+        elif checked_list == self.ready_0_list : 
+            self.checked = 4
+            self.check_pub.publish(self.checked)
+            self.checked = 0
+        elif checked_list == self.ready_90_list : 
+            self.checked = 5
+            self.check_pub.publish(self.checked)
+            self.checked = 0
+        elif checked_list == self.ready_180_list : 
+            self.checked = 6
+            self.check_pub.publish(self.checked)
+            self.checked = 0
+        elif checked_list == self.ready_270_list : 
+            self.checked = 7
+            self.check_pub.publish(self.checked)
+            self.checked = 0
+        elif checked_list == self.all_0_list :
+            self.checked = 0
+            self.check_pub.publish(self.checked) 
+        else :
+            self.checked = 0
+            self.check_pub.publish(self.checked) 
     # xarm
     def move_pose(self,pos_x,pos_y,pos_z,ori_x,ori_y,ori_z,ori_w):  # move
         group = self.group
@@ -368,8 +398,6 @@ if __name__=="__main__":
                 else:
                     client.checkPublisher(self.all_0_list)
 
-
-                
             elif client.tcp_msg.data == "":
                 pass
             else:
