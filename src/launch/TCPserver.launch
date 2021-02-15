@@ -1,7 +1,13 @@
 <launch> 
+  <!-- camera and fiducials -->
+  <include file="$(find aruco_detect)/launch/aruco_detect.launch"/>
+
+
   <!-- target point publisher -->
   <node pkg="move_arm" type="clavis_xarm_client.py" name="clavis_xarm_client" />
-
-  <!-- TF publisher -->
   <node pkg="move_arm" type="clavis_tcp_server.py" name="clavis_tcp_server" />
+
+   <!-- xarm6 -->
+  <include file="$(find xarm6_moveit_config)/launch/realMove_exec.launch"/>
+  
 </launch>

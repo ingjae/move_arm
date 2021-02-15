@@ -264,9 +264,9 @@ def charging_down_pose():
         (tar_trans, tar_rot) = lookup_trans_tar()
 
         print("%d center pose" %(i+1))
-        # client.move_pose(tar_trans[0],tar_trans[1],tar_trans[2]+0.25,new_rot[0],new_rot[1],new_rot[2],new_rot[3])
-    
-    # sponge down
+
+
+    # charging down
     client.move_pose(tar_trans[0],tar_trans[1],tar_trans[2]+0.155,new_rot[0],new_rot[1],new_rot[2],new_rot[3]) # before charging
     client.move_pose(tar_trans[0],tar_trans[1],tar_trans[2]+0.114,new_rot[0],new_rot[1],new_rot[2],new_rot[3]) # charging
     
