@@ -288,11 +288,11 @@ def move_charging_pose():
         (tar_trans, tar_rot) = lookup_trans_tar()
 
         print("%d go to center" %(i+1))
-        Xarm6.move_pose(tar_trans[0],tar_trans[1],tar_trans[2]+0.25,new_rot[0],new_rot[1],new_rot[2],new_rot[3])
+        # Xarm6.move_pose(tar_trans[0],tar_trans[1],tar_trans[2]+0.25,new_rot[0],new_rot[1],new_rot[2],new_rot[3])
     
     # sponge down
-    Xarm6.move_pose(tar_trans[0],tar_trans[1],tar_trans[2]+0.18,new_rot[0],new_rot[1],new_rot[2],new_rot[3])
-    Xarm6.move_pose(tar_trans[0],tar_trans[1],tar_trans[2]+0.114,new_rot[0],new_rot[1],new_rot[2],new_rot[3])
+    Xarm6.move_pose(tar_trans[0],tar_trans[1],tar_trans[2]+0.155,new_rot[0],new_rot[1],new_rot[2],new_rot[3]) # before charging
+    Xarm6.move_pose(tar_trans[0],tar_trans[1],tar_trans[2]+0.114,new_rot[0],new_rot[1],new_rot[2],new_rot[3]) # charging
     rospy.sleep(1)
     # Xarm6.move_pose(tar_trans[0],tar_trans[1],tar_trans[2]+0.18,new_rot[0],new_rot[1],new_rot[2],new_rot[3])    
 
@@ -306,12 +306,12 @@ def main():
     # print("---second---")
     
     # print("---third---")
-    # move_charging_pose()
     
     # print("---final---")
     # Xarm6.move_final_pose()
 
-    Xarm6.move_camera_pose(90) # camera pose
+    # Xarm6.move_camera_pose(90) # camera pose
+    move_charging_pose()
 
     # Xarm6.move_final_pose()
 
