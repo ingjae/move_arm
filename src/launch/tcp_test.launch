@@ -1,0 +1,6 @@
+<launch> 
+
+  <node pkg="move_arm" type="clavis_xarm_client.py" name="clavis_xarm_client" />
+  <node pkg="move_arm" type="clavis_tcp_server.py" name="clavis_tcp_server" />
+
+</launch>
