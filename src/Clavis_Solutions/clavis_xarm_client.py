@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 import time
 import rospy
-from std_msgs.msg import String,Bool
+from std_msgs.msg import String,Bool,Int8
 import math
 from math import sin, cos, pi
 import sys
@@ -72,7 +72,7 @@ class MoveClient(object):
         self.tcp_sub = rospy.Subscriber('tcptopic', String, self.tcpCallback)
         self.tcp_msg = String()
         self.finish_pub = rospy.Publisher('is_finished',Bool,queue_size=10) # 
-        self.check_pub = rospy.Publisher('check',Int,queue_size=10) # 
+        self.check_pub = rospy.Publisher('check',Int8,queue_size=10) # 
         self.rate = rospy.Rate(1.0)
         self.once = False
         self.is_finished = False
@@ -378,30 +378,57 @@ if __name__=="__main__":
                 print("UnCharging pose")
                 charging_up_pose(charging_point[0],charging_point[1],charging_point[2],charging_point[3],charging_point[4],charging_point[5],charging_point[6])
                 client.finishPublisher()
-            elif client.tcp_msg.data == "0300": #checking joint state
+            elif client.tcp_msg.data == "1300": #checking joint state
                 print("Checking Joint state")
-                current_joints = self.group.get_current_joint_values()
-                if compare_joint_values(current_joints,self.init_a_list,0.01) == True: # tolerance 0.01 
-                    client.checkPublisher(self.init_a_list)
-                elif compare_joint_values(current_joints,self.init_b_list,0.01) == True: # tolerance 0.01 
-                    client.checkPublisher(self.init_b_list)
-                elif compare_joint_values(current_joints,self.init_c_list,0.01) == True: # tolerance 0.01 
-                    client.checkPublisher(self.init_c_list)
-                elif compare_joint_values(current_joints,self.ready_0_list,0.01) == True: # tolerance 0.01 
-                    client.checkPublisher(self.ready_0_list)
-                elif compare_joint_values(current_joints,self.ready_90_list,0.01) == True: # tolerance 0.01 
-                    client.checkPublisher(self.ready_90_list)
-                elif compare_joint_values(current_joints,self.ready_180_list,0.01) == True: # tolerance 0.01 
-                    client.checkPublisher(self.ready_180_list)
-                elif compare_joint_values(current_joints,self.ready_270_list,0.01) == True: # tolerance 0.01 
-                    client.checkPublisher(self.ready_270_list)
+                current_joints = client.group.get_current_joint_values()
+                if compare_joint_values(current_joints,client.init_a_list,0.01) == True: # tolerance 0.01 
+                    client.checkPublisher(client.init_a_list)
+                    client.finishPublisher()
+                    rospy.logwarn("init a")
+                elif compare_joint_values(current_joints,client.init_b_list,0.01) == True: # tolerance 0.01 
+                    client.checkPublisher(client.init_b_list)
+                    client.finishPublisher()
+                    rospy.logwarn("init b")
+                elif compare_joint_values(current_joints,client.init_c_list,0.01) == True: # tolerance 0.01 
+                    client.checkPublisher(client.init_c_list)
+                    client.finishPublisher()
+                    rospy.logwarn("init c")
+                elif compare_joint_values(current_joints,client.ready_0_list,0.01) == True: # tolerance 0.01 
+                    client.checkPublisher(client.ready_0_list)
+                    client.finishPublisher()
+                    rospy.logwarn("ready 0")
+                elif compare_joint_values(current_joints,client.ready_90_list,0.01) == True: # tolerance 0.01 
+                    client.checkPublisher(client.ready_90_list)
+                    client.finishPublisher()
+                    rospy.logwarn("ready 90")
+                elif compare_joint_values(current_joints,client.ready_180_list,0.01) == True: # tolerance 0.01 
+                    client.checkPublisher(client.ready_180_list)
+                    client.finishPublisher()
+                    rospy.logwarn("ready 180")
+                elif compare_joint_values(current_joints,client.ready_270_list,0.01) == True: # tolerance 0.01 
+                    client.checkPublisher(client.ready_270_list)
+                    client.finishPublisher()
+                    rospy.logwarn("ready 270")
                 else:
-                    client.checkPublisher(self.all_0_list)
-
+                    client.checkPublisher(client.all_0_list)
+                    client.finishPublisher()
+                    rospy.logwarn("unkown pose detected")
             elif client.tcp_msg.data == "":
-                pass
+                client.finishPublisher()
+            elif client.tcp_msg.data == "1100": #checking joint state
+                client.finishPublisher()
+                print("server helth check")
+            elif client.tcp_msg.data == "1200": #checking joint state
+                client.finishPublisher()
+                print("camera helth check")
+            # elif client.tcp_msg.data == "1300": #checking joint state
+            #     client.finishPublisher()
+            #     print("robot Joint state")
+            #     # pass
             else:
-                rospy.logwarn("Error")
+                rospy.logwarn("Protocol Error")
+                client.finishPublisher()
+
             client.tcp_msg.data ="" 
             rate.sleep()
     except Exception as e:
