@@ -1,6 +1,8 @@
 <launch> 
 
-  <node pkg="move_arm" type="clavis_xarm_client.py" name="clavis_xarm_client" />
-  <node pkg="move_arm" type="clavis_tcp_server.py" name="clavis_tcp_server" />
+  <node pkg="move_arm" type="clavis_xarm_client.py" name="clavis_xarm_client" output="screen"/>
+  <node pkg="move_arm" type="clavis_tcp_server.py" name="clavis_tcp_server"  output="screen"/>
+  <include file="$(find xarm6_moveit_config)/launch/demo.launch"/>
+
 
 </launch>
