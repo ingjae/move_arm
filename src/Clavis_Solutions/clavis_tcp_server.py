@@ -65,19 +65,20 @@ if __name__=="__main__":
         serverSock.listen(5)
         print 'TCP Server Activate'
 
-        connectionSock,addr=serverSock.accept() #waiting connect
-        print 'TCP Server Connected'
+        # connectionSock,addr=serverSock.accept() #waiting connect
+        # print 'TCP Server Connected'
         
         while not rospy.is_shutdown():
             try :
-                # tcp_server.camera_check = False
-
+                connectionSock,addr=serverSock.accept() #waiting connect
+                print 'TCP Server Connected'
                 # connectionSock.settimeout(5)
                 buffer=connectionSock.recv(tcp_server.BUFFER)
                 # print buf
                 tcp_server.pub.publish(buffer)
                 # tcp_server.finish = True
                 while True :
+                    # print connectionSock
                     if tcp_server.finish == True:
                         
                         if buffer =="0010": 
@@ -173,17 +174,18 @@ if __name__=="__main__":
                             # connectionSock.send('0321')
 
                             pass
+                    
                     else:
                         pass
-               
-                    
             except socket.timeout:
                 print 'time out'
             
+            
             tcp_server.RATE.sleep()
-        print "exit"
-        connectionSock.close()
+       
     except Exception as e:
+        print "exit"
+        # connectionSock.close()
         rospy.logerr(e)
     finally:
         pass
