@@ -342,7 +342,7 @@ def charging_down_pose():
 if __name__=="__main__":    
     try:
         rospy.init_node('move_client')
-        rate = rospy.Rate(20)
+        rate = rospy.Rate(5)
         client = MoveClient()
         while not rospy.is_shutdown():
             # print(tcp.tcp_msg)
