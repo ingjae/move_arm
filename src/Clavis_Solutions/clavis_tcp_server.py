@@ -65,12 +65,12 @@ if __name__=="__main__":
         serverSock.listen(5)
         print 'TCP Server Activate'
 
-        # connectionSock,addr=serverSock.accept() #waiting connect
+        # connectionSock,addr=serverSock.accept() #waiting connect  # always server connection 
         # print 'TCP Server Connected'
         
         while not rospy.is_shutdown():
             try :
-                connectionSock,addr=serverSock.accept() #waiting connect
+                connectionSock,addr=serverSock.accept() #waiting connect every time 
                 print 'TCP Server Connected'
                 # connectionSock.settimeout(5)
                 buffer=connectionSock.recv(tcp_server.BUFFER)
