@@ -73,18 +73,26 @@ class MoveClient(object):
         self.tcp_msg = String()
         self.finish_pub = rospy.Publisher('is_finished',Bool,queue_size=10) # 
         self.check_pub = rospy.Publisher('check',Int8,queue_size=10) # 
-        self.rate = rospy.Rate(1.0)
+        self.error_pub = rospy.Publisher('error',Bool,queue_size=10) # 
+        self.rate = rospy.Rate(20.0)
         self.once = False
         self.is_finished = False
         self.checked = 0
+        self.error = False
 
     def tcpCallback(self, msg):
         self.tcp_msg = msg
 
     def finishPublisher(self):
-        self.is_finished = True
+        
         self.finish_pub.publish(self.is_finished)
         self.is_finished = False
+    
+    def errorPublisher(self):
+        
+        self.error_pub.publish(self.error)
+        self.error = False
+        
 
     def checkPublisher(self,checked_list): 
         if checked_list == self.init_a_list :
@@ -329,107 +337,127 @@ def charging_down_pose():
     return(tar_trans[0],tar_trans[1],tar_trans[2],new_rot[0],new_rot[1],new_rot[2],new_rot[3])
 
 
-    
-
-
-
-
+  
 
 if __name__=="__main__":    
     try:
         rospy.init_node('move_client')
-        rate = rospy.Rate(10)
+        rate = rospy.Rate(20)
         client = MoveClient()
         while not rospy.is_shutdown():
             # print(tcp.tcp_msg)
             if client.tcp_msg.data == "0010":
                 print("Initial_setting_a")
                 client.move_initial_pose_a()
+                client.is_finished = True
                 client.finishPublisher()
             elif client.tcp_msg.data == "0020":
                 print("Initial_setting_b")
                 client.move_initial_pose_b()
+                client.is_finished = True
                 client.finishPublisher()
             elif client.tcp_msg.data == "0030":
                 print("Initial_setting_c")
                 client.move_initial_pose_c()
+                client.is_finished = True
                 client.finishPublisher()
             elif client.tcp_msg.data == "0110":
                 print("Initial_camera_pose")
                 client.move_camera_pose(0)
+                client.is_finished = True
                 client.finishPublisher()
             elif client.tcp_msg.data == "0120":
                 print("Initial_camera_pose")
                 client.move_camera_pose(90)
+                client.is_finished = True
                 client.finishPublisher()
             elif client.tcp_msg.data == "0130":
                 print("Initial_camera_pose")
                 client.move_camera_pose(180)
+                client.is_finished = True
                 client.finishPublisher()
             elif client.tcp_msg.data == "0140":
                 print("Initial_camera_pose")
                 client.move_camera_pose(270)
+                client.is_finished = True
                 client.finishPublisher()
             elif client.tcp_msg.data == "0210":
                 print("Charging pose")
                 charging_point = charging_down_pose()
+                client.is_finished = True
                 client.finishPublisher()
             elif client.tcp_msg.data == "0220":
                 print("UnCharging pose")
                 charging_up_pose(charging_point[0],charging_point[1],charging_point[2],charging_point[3],charging_point[4],charging_point[5],charging_point[6])
+                client.is_finished = True
                 client.finishPublisher()
             elif client.tcp_msg.data == "1300": #checking joint state
                 print("Checking Joint state")
                 current_joints = client.group.get_current_joint_values()
                 if compare_joint_values(current_joints,client.init_a_list,0.01) == True: # tolerance 0.01 
                     client.checkPublisher(client.init_a_list)
+                    client.is_finished = True
                     client.finishPublisher()
                     rospy.logwarn("init a")
                 elif compare_joint_values(current_joints,client.init_b_list,0.01) == True: # tolerance 0.01 
                     client.checkPublisher(client.init_b_list)
+                    client.is_finished = True
                     client.finishPublisher()
                     rospy.logwarn("init b")
                 elif compare_joint_values(current_joints,client.init_c_list,0.01) == True: # tolerance 0.01 
                     client.checkPublisher(client.init_c_list)
+                    client.is_finished = True
                     client.finishPublisher()
                     rospy.logwarn("init c")
                 elif compare_joint_values(current_joints,client.ready_0_list,0.01) == True: # tolerance 0.01 
                     client.checkPublisher(client.ready_0_list)
+                    client.is_finished = True
                     client.finishPublisher()
                     rospy.logwarn("ready 0")
                 elif compare_joint_values(current_joints,client.ready_90_list,0.01) == True: # tolerance 0.01 
                     client.checkPublisher(client.ready_90_list)
+                    client.is_finished = True
                     client.finishPublisher()
                     rospy.logwarn("ready 90")
                 elif compare_joint_values(current_joints,client.ready_180_list,0.01) == True: # tolerance 0.01 
                     client.checkPublisher(client.ready_180_list)
+                    client.is_finished = True
                     client.finishPublisher()
                     rospy.logwarn("ready 180")
                 elif compare_joint_values(current_joints,client.ready_270_list,0.01) == True: # tolerance 0.01 
                     client.checkPublisher(client.ready_270_list)
+                    client.is_finished = True
                     client.finishPublisher()
                     rospy.logwarn("ready 270")
                 else:
                     client.checkPublisher(client.all_0_list)
+                    client.is_finished = True
                     client.finishPublisher()
                     rospy.logwarn("unkown pose detected")
-            elif client.tcp_msg.data == "":
-                client.finishPublisher()
+            elif client.tcp_msg.data == "": ## error
+                client.error = True
+                client.errorPublisher()
             elif client.tcp_msg.data == "1100": #checking joint state
+                client.is_finished = True
                 client.finishPublisher()
                 print("server helth check")
             elif client.tcp_msg.data == "1200": #checking joint state
+                client.is_finished = True
                 client.finishPublisher()
                 print("camera helth check")
             # elif client.tcp_msg.data == "1300": #checking joint state
             #     client.finishPublisher()
             #     print("robot Joint state")
             #     # pass
-            else:
+            else:## error
                 rospy.logwarn("Protocol Error")
-                client.finishPublisher()
+                client.error = True
+                client.errorPublisher()
 
             client.tcp_msg.data ="" 
+            client.error = False
+            client.is_finished = False
+            client.finishPublisher()
             rate.sleep()
     except Exception as e:
         rospy.logerr(e)
