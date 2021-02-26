@@ -11,7 +11,7 @@ class TCPServer(object):
         self.HOST='192.168.1.200'
         self.PORT=8080
         self.BUFFER=4096
-        self.RATE = rospy.Rate(10)              
+        self.RATE = rospy.Rate(20)              
         self.pub=rospy.Publisher('tcptopic',String,queue_size=10)
         self.sub = rospy.Subscriber('is_finished', Bool ,self.finishCallback) 
         self.sub = rospy.Subscriber('check', Int8 ,self.checkCallback) 
@@ -22,6 +22,7 @@ class TCPServer(object):
         self.check = 0 # new!! checking joint state
         self.camera_check = False # new!! checking camera topic state
         self.camera_info = UInt32() # new!! checking camera topic state
+        self.error = False
 
 
 
