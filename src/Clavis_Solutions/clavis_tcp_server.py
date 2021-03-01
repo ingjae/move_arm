@@ -13,9 +13,9 @@ class TCPServer(object):
         self.BUFFER=4096
         self.RATE = rospy.Rate(10)              
         self.pub=rospy.Publisher('tcptopic',String,queue_size=10)
-        self.sub = rospy.Subscriber('is_finished', Bool ,self.finishCallback) 
-        self.sub = rospy.Subscriber('check', Int8 ,self.checkCallback) 
-        self.sub = rospy.Subscriber('camera/color/camera_info', CameraInfo ,self.cameraCallback) 
+        self.finish_sub = rospy.Subscriber('is_finished', Bool ,self.finishCallback) 
+        self.check_sub = rospy.Subscriber('check', Int8 ,self.checkCallback) 
+        self.camera_sub = rospy.Subscriber('camera/color/camera_info', CameraInfo ,self.cameraCallback) 
         
         
         self.finish = False # is_finished?
