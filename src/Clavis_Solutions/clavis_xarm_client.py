@@ -16,6 +16,12 @@ from geometry_msgs.msg import Point, Pose, Quaternion, Twist, Vector3
 from moveit_commander.conversions import pose_to_list
 from tf.transformations import quaternion_from_euler, euler_from_quaternion
 
+global lookup_eef 
+global lookup_tar 
+lookup_eef = False
+lookup_tar = False
+
+
 def all_close(goal, actual, tolerance):
   all_equal = True
   if type(goal) is list:
@@ -79,6 +85,7 @@ class MoveClient(object):
         self.is_finished = False
         self.checked = 0
         self.error = False
+        # self.lookup = False  # global declare
 
     def tcpCallback(self, msg):
         self.tcp_msg = msg
@@ -275,25 +282,32 @@ class MoveClient(object):
 
 # marker(fidicial static_tansform) lookup 
 def lookup_trans_tar():
+    global lookup_eef 
+    global lookup_tar 
     target_listener = tf.TransformListener()
     while not rospy.is_shutdown():
         try:
             (tar_trans,tar_rot) = target_listener.lookupTransform('/world','/marker', rospy.Time(0))
             rospy.logwarn("marker checkout")
+            lookup_tar = True
             return (tar_trans, tar_rot)
         except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
+            lookup_tar = False
             pass
 
 # eef lookup
 def lookup_trans_eef():
+    global lookup_eef 
+    global lookup_tar 
     target_listener = tf.TransformListener()
     while not rospy.is_shutdown():
         try:
             (eef_trans,eef_rot) = target_listener.lookupTransform('/world','/link_eef', rospy.Time(0))
             rospy.logwarn("link_eef checkout")
-
+            lookup_eef = True
             return (eef_trans, eef_rot)
         except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
+            lookup_eef = False
             pass
 
 # qurternion transform (only 'yaw' value)
@@ -305,37 +319,42 @@ def quternion_rotation(tar1,tar2,tar3,tar4):
     new_rot = quaternion_from_euler(q_eul[0],q_eul[1],q_eul[2])    
     return new_rot
 
-def charging_up_pose(tar1,tar2,tar3,rot1,rot2,rot3,rot4):
+def charging_up_pose(tar1,tar2,tar3,rot1,rot2,rot3,rot4):  # default (0,0,0,0,0,0,0)
     client = MoveClient()
-    client.move_pose(tar1,tar2,tar3+0.18,rot1,rot2,rot3,rot4)
-    rospy.sleep(0.5)
+    if (lookup_eef == True) and (lookup_tar == True):
+        client.move_pose(tar1,tar2,tar3+0.18,rot1,rot2,rot3,rot4)
+        rospy.sleep(0.5)
+    else:
+        pass
     
 def charging_down_pose():
     client = MoveClient()
+    if (lookup_eef == True) and (lookup_tar == True):
     # repeat 2
-    for i in range(2):
-        print("%d iter start" %(i+1))
-        # lookup 1
-        (tar_trans, tar_rot) = lookup_trans_tar()
-        (eef_trans, eef_rot) = lookup_trans_eef()
-        new_rot = quternion_rotation(tar_rot[0],tar_rot[1],tar_rot[2],tar_rot[3])
-        print("%d rotate pose" %(i+1))
-        client.move_pose(eef_trans[0],eef_trans[1],eef_trans[2],new_rot[0],new_rot[1],new_rot[2],new_rot[3])
-        # lookup 2
-        (tar_trans, tar_rot) = lookup_trans_tar()
+        for i in range(2):
+            print("%d iter start" %(i+1))
+            # lookup 1
+            (tar_trans, tar_rot) = lookup_trans_tar()
+            (eef_trans, eef_rot) = lookup_trans_eef()
+            new_rot = quternion_rotation(tar_rot[0],tar_rot[1],tar_rot[2],tar_rot[3])
+            print("%d rotate pose" %(i+1))
+            client.move_pose(eef_trans[0],eef_trans[1],eef_trans[2],new_rot[0],new_rot[1],new_rot[2],new_rot[3])
+            # lookup 2
+            (tar_trans, tar_rot) = lookup_trans_tar()
 
-        print("%d center pose" %(i+1))
+            print("%d center pose" %(i+1))
 
 
-    # charging down
-    client.move_pose(tar_trans[0],tar_trans[1],tar_trans[2]+0.155,new_rot[0],new_rot[1],new_rot[2],new_rot[3]) # before charging
-    client.move_pose(tar_trans[0],tar_trans[1],tar_trans[2]+0.114,new_rot[0],new_rot[1],new_rot[2],new_rot[3]) # charging
-    
-    rospy.logwarn("go to charge")
+        # charging down
+        client.move_pose(tar_trans[0],tar_trans[1],tar_trans[2]+0.155,new_rot[0],new_rot[1],new_rot[2],new_rot[3]) # before charging
+        client.move_pose(tar_trans[0],tar_trans[1],tar_trans[2]+0.114,new_rot[0],new_rot[1],new_rot[2],new_rot[3]) # charging
 
-    rospy.sleep(1.5)
-    return(tar_trans[0],tar_trans[1],tar_trans[2],new_rot[0],new_rot[1],new_rot[2],new_rot[3])
+        rospy.logwarn("go to charge")
 
+        rospy.sleep(1.5)
+        return(tar_trans[0],tar_trans[1],tar_trans[2],new_rot[0],new_rot[1],new_rot[2],new_rot[3])
+    else : 
+        return(0,0,0,0,0,0,0) #do nothing
 
   
 
@@ -381,7 +400,7 @@ if __name__=="__main__":
                 client.move_camera_pose(270)
                 client.is_finished = True
                 client.finishPublisher()
-            elif client.tcp_msg.data == "0210":
+            elif client.tcp_msg.data == "0210":  # charge
                 print("Charging pose")
                 charging_point = charging_down_pose()
                 client.is_finished = True
