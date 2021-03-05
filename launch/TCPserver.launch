@@ -7,6 +7,6 @@
   
   <!-- target point publisher -->
   <node pkg="move_arm" type="clavis_xarm_client.py" name="clavis_xarm_client" respawn="true"/>
-  <node pkg="move_arm" type="clavis_tcp_server.py" name="clavis_tcp_server" respawn="true"/>
+  <node pkg="move_arm" type="clavis_tcp_server.py" name="clavis_tcp_server" respawn="true" respawn_delay="5"/>
 
 </launch>
