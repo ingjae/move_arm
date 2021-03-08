@@ -5,6 +5,8 @@ import socket
 import rospy
 from std_msgs.msg import String,Bool,Int8,Header,Time,UInt32
 from sensor_msgs.msg import Image,CameraInfo
+import os
+
 
 class TCPServer(object):
     def __init__(self):
@@ -187,6 +189,11 @@ if __name__=="__main__":
                         connectionSock.send('1201')
                     else:
                         connectionSock.send('1202')
+
+                    tcp_server.finish = False
+                elif buffer =="1000": # reset all
+                    connectionSock.send('1001')
+                    os.system("sudo systemctl restart bringup_ros.service")
 
                     tcp_server.finish = False
                 else:
