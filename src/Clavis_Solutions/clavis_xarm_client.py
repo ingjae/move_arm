@@ -58,13 +58,13 @@ class MoveClient(object):
         self.display_trajectory_publisher = display_trajectory_publisher
 
         # Setting Joint Values [YOU SHUOLD CHANGE HERE]#############################################
-        self.init_a_list = [-1.8116518, 0.715585, -0.1797689, 0.000, -0.5742133, 0.0698132 ]
-        self.init_b_list = [-1.85005, 0.4852015, -0.13439, -0.010472, -0.3228859, -0.13439 ]
-        self.init_c_list = [-1.682497,-0.0418879,0.101229,-0.146608,-0.0663225,0.0698132 ]   
-        self.ready_0_list = [-1.81514, -0.5794, -0.3334, 0.000, 0.9424, 0.000 ]
-        self.ready_90_list = [-0.366519, -0.5794, -0.3334, 0.000, 0.9424, 0.000 ]
-        self.ready_180_list = [1.309 , -0.5794, -0.3334, 0.000, 0.9424, 0.000 ]
-        self.ready_270_list = [2.79253 , -0.5794, -0.3334, 0.000, 0.9424, 0.000 ]
+        self.init_a_list = [2.4207311, 0.610855, -0.1151898, 0.1064633, -0.3158993, 0.2722668 ]
+        self.init_b_list = [2.4765807, -0.0017453, 0.0785385, 0.1064633, 0.1640582, -0.9284996 ]
+        self.init_c_list = [2.7523381, -0.7923662, 0.0296701, 0.104718, 0.8115645, 0.2722668 ]   
+        self.ready_0_list = [0.0750479, -0.3438241, -0.6649593, -0.0069812, 1.021005, -0.0226889 ]
+        self.ready_90_list = [0.0750479, -0.3438241, -0.6649593, -0.0069812, 1.021005, -0.0226889 ]
+        self.ready_180_list = [0.0750479, -0.3438241, -0.6649593, -0.0069812, 1.021005, -0.0226889 ]
+        self.ready_270_list = [0.0750479, -0.3438241, -0.6649593, -0.0069812, 1.021005, -0.0226889 ]
         #############################################################################################
 
         # Client
@@ -320,8 +320,8 @@ def charging_down_pose():
 
 
     # charging down
-    client.move_pose(tar_trans[0],tar_trans[1],tar_trans[2]+0.155,new_rot[0],new_rot[1],new_rot[2],new_rot[3]) # before charging
-    client.move_pose(tar_trans[0],tar_trans[1],tar_trans[2]+0.114,new_rot[0],new_rot[1],new_rot[2],new_rot[3]) # charging
+    client.move_pose(tar_trans[0],tar_trans[1],tar_trans[2]+0.170,new_rot[0],new_rot[1],new_rot[2],new_rot[3]) # before charging
+    client.move_pose(tar_trans[0],tar_trans[1],tar_trans[2]+0.150,new_rot[0],new_rot[1],new_rot[2],new_rot[3]) # charging
     
     rospy.logwarn("go to charge")
 
