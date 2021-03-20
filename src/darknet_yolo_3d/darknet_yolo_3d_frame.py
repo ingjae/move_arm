@@ -9,8 +9,11 @@ import rospy
 import tf
 from std_msgs.msg import Header
 from geometry_msgs.msg import Point, PoseStamped, Quaternion, Twist, Vector3 
-from gb_detection_3d_msgs.msg import BoundingBoxes3d
-from gb_detection_3d_msgs.msg import BoundingBox3d
+# from gb_detection_3d_msgs.msg import BoundingBoxes3d
+# from gb_detection_3d_msgs.msg import BoundingBox3d
+from gb_visual_detection_3d_msgs.msg import BoundingBoxes3d
+from gb_visual_detection_3d_msgs.msg import BoundingBox3d
+
 
 
 class ObjectFrame(object):
@@ -48,7 +51,7 @@ class ObjectFrame(object):
     
         try:
 
-            (trans,rot) = self.camera_link_listener.lookupTransform('/world','/camera_link', rospy.Time(0))
+            (trans,rot) = self.camera_link_listener.lookupTransform('/base_link','/camera_link', rospy.Time(0))
         except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
             return 0
         

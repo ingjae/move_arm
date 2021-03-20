@@ -1,17 +1,16 @@
 <launch>
   
   <!-- camera with arm -->
-  <node pkg="tf" type="static_transform_publisher" name="camera_link" args="-0.030 0.00 0.070 0 -1.57 0 link7 camera_link 50" />
+  <node pkg="tf" type="static_transform_publisher" name="astra_link" args=" 0.21744 0= 0.82804 0 0 0 base_link camera_link 50" />
   
   <!-- target point publisher -->
 
-  <node pkg="move_arm" type="darknet_yolo_3d_point.py" name="darknet_yolo_3d_point" />
+  <node pkg="move_arm" type="darknet_yolo_3d_point.py" name="darknet_yolo_3d_point" output = "screen"/>
 
   <!-- TF publisher -->
-  <node pkg="move_arm" type="darknet_yolo_3d_frame.py" name="darknet_yolo_3d_frame" />
+  <node pkg="move_arm" type="darknet_yolo_3d_frame.py" name="darknet_yolo_3d_frame" output = "screen"/>
 
   <!-- Robot Action Client -->
-  <!-- <node pkg="move_arm" type="darknet_yolo_3d_client.py" name="darknet_yolo_3d_client" /> -->
-
+  <node pkg="move_arm" type="darknet_yolo_3d_client.py" name="darknet_yolo_3d_client" output = "screen"/>
 
 </launch>

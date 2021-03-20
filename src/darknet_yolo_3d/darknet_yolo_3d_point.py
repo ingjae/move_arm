@@ -20,8 +20,11 @@ import rospy
 import tf
 from std_msgs.msg import Header
 from geometry_msgs.msg import Point, Pose, Quaternion, Twist, Vector3
-from gb_detection_3d_msgs.msg import BoundingBoxes3d
-from gb_detection_3d_msgs.msg import BoundingBox3d
+# from gb_detection_3d_msgs.msg import BoundingBoxes3d
+# from gb_detection_3d_msgs.msg import BoundingBox3d
+from gb_visual_detection_3d_msgs.msg import BoundingBoxes3d
+from gb_visual_detection_3d_msgs.msg import BoundingBox3d
+
 
 target_point = Vector3()
 target_point.x = 0.0
@@ -42,72 +45,56 @@ def init_node():
 
 
 def cb_bounding_boxes_3d(data):
-    global target_point
     global target_button
+    global target_point
+
     button_point_pub = rospy.Publisher("/button_target_point", Vector3, queue_size=20)
     box_data = data
     # print (bounding_boxes_3d)
-    
-    
     boxes_count = len(box_data.bounding_boxes)
     # print (boxes_count)
-    
-        # print (temp_class)
+
     for count in range (boxes_count):
         temp_class = box_data.bounding_boxes[count].Class
         # print(temp_class)
         selected_button = rospy.get_param('button')
-        if (selected_button == 0 and temp_class == "OPEN"):
+        if (selected_button == "open" and temp_class == "open"):
             target_button = count
-            # print("target : ",selected_button)
             break
-            
-        elif (selected_button == 2 and temp_class == "CLOSE"):
+        elif (selected_button == "close" and temp_class == "close"):
             target_button = count
-            # print("target : ",selected_button)
             break
-
-        elif (selected_button == 4 and temp_class == "B1F"):
+        elif (selected_button == "b1F" and temp_class == "b1"):
             target_button = count
-            # print("target : ",selected_button)
             break   
-        elif (selected_button == 6 and temp_class == "1F"):
+        elif (selected_button == "1f" and temp_class == "1f"):
             target_button = count
-            # print("target : ",selected_button)
             break
-        elif (selected_button == 8 and temp_class == "2F"):
+        elif (selected_button == "2f" and temp_class == "2f"):
             target_button = count
-            # print("target : ",selected_button)
             break
-        elif (selected_button ==  10 and temp_class == "3F"):
+        elif (selected_button ==  "3f" and temp_class == "3f"):
             target_button = count
-            # print("target : ",selected_button)
             break
-        elif (selected_button ==  12 and temp_class == "4F"):
+        elif (selected_button ==  "4f" and temp_class == "4f"):
             target_button = count
-            # print("target : ",selected_button)
             break
-        elif (selected_button ==  14 and temp_class == "5F"):
+        elif (selected_button ==  "5f" and temp_class == "5f"):
             target_button = count
-            # print("target : ",selected_button)
             break
-        elif (selected_button ==  16 and temp_class == "6F"):
+        elif (selected_button ==  "6f" and temp_class == "6f"):
             target_button = count
-            # print("target : ",selected_button)
             break
-        elif (selected_button ==  18 and temp_class == "UP"):
+        elif (selected_button ==  "up" and temp_class == "up"):
             target_button = count
-            # print("target : ",selected_button)
             break
-        elif (selected_button ==  20 and temp_class == "DOWN"):
+        elif (selected_button ==  "down" and temp_class == "down"):
             target_button = count
-            # print("target : ",selected_button)
             break
-
         else:   
             target_button = -1
-            pass
-   
+
+    # print(target_button)
     if((target_button != -1) and (len(box_data.bounding_boxes) >= target_button)):
         # print (box_data.bounding_boxes,target_button)
         target_x_min = box_data.bounding_boxes[target_button].xmin
@@ -123,18 +110,19 @@ def cb_bounding_boxes_3d(data):
         float(target_y_max) 
         float(target_z_min) 
         float(target_z_max) 
-        
+        target_center_x = (target_x_min+target_x_max)/2
         target_center_y = (target_y_min+target_y_max)/2
         target_center_z = (target_z_min+target_z_max)/2
 
-        target_point.x = target_x_min
+        target_point.x = target_center_x
         target_point.y = target_center_y
         target_point.z = target_center_z
-       
+        # print(target_point.x,target_point.y,target_point.z)
         button_point_pub.publish(target_point)
        
     else:
-        pass
+        pass    
+    
 
 
 if __name__=="__main__":    
