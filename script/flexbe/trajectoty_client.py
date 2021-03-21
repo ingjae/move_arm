@@ -86,12 +86,12 @@ if __name__=="__main__":
         joint_list = []
         line_count =0
         
-        with open('/home/ingjae/catkin_ws/src/move_arm/trajectory_csv/position_test.csv') as traj:
+        with open('/home/ingjae/catkin_ws/src/move_arm/trajectory_csv/position_readypose_100hz.csv') as traj:
             while 1:
                 data = traj.readline().replace("\n","").replace("(","").replace(")","").replace(" ","").strip("\"")
                 # print (data)
                 if not data:
-                    print ("read complete") 
+                    print ("Read complete") 
                     break
                 if line_count == 0 :
                     header = data.split(",")
@@ -102,10 +102,11 @@ if __name__=="__main__":
 
         while not rospy.is_shutdown():
             if rospy.get_param("trajectory_status") == 1:
-                print(joint_list)
+                # print(joint_list)
                 for joint in joint_list:
                     client.move_joint(float(joint[0]),float(joint[1]),float(joint[2]),float(joint[3]),float(joint[4]),float(joint[5]))
-                    rospt.sleep(0.05)
+                    # rospy.sleep(0.05)
+                rospy.set_param("trajectory_status",-1) 
             else:
                 pass
             rate.sleep()
