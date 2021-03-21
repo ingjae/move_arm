@@ -1,2 +1,10 @@
 .vscode/c_cpp_properties.json
 .vscode/settings.json
+script/.vscode/c_cpp_properties.json
+.gitignore
+script/launch/.vscode/c_cpp_properties.json
+.gitignore
+script/.vscode/settings.json
+script/launch/.vscode/settings.json
+.gitignore
+script/darknet_yolo_3d/.vscode/settings.json
