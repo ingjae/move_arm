@@ -40,7 +40,7 @@ def all_close(goal, actual, tolerance):
 class MoveClient(object):
     def __init__(self):
         # xarm
-        rospy.init_node('trajectory_client')
+        
         moveit_commander.roscpp_initialize(sys.argv)
  
         
@@ -70,7 +70,7 @@ class MoveClient(object):
         joint_goal[4] = joint5
         joint_goal[5] = joint6
         group.go(joint_goal, wait=True)
-        rospy.sleep(5)
+        # rospy.sleep(5)
         
         current_joints = self.group.get_current_joint_values()
         return all_close(joint_goal, current_joints, 0.01)  
@@ -78,30 +78,37 @@ class MoveClient(object):
 
 
 if __name__=="__main__":
+    rospy.init_node('trajectory_client')
     rate = rospy.Rate(20.0)
     rospy.set_param("trajectory_status",0)
     try:
         client = MoveClient()
         joint_list = []
         line_count =0
-        while 1:
-            with open('/home/ingjae/catkin_ws/src/move_arm/trajectory_csv/test.csv') as traj:
-                while 1:
-                    data = traj.readline().replace("\n","") # 줄 바꿈 제거 
-                    # print (data)
-                    if not data: break
-                    if line_count == 0 :
-                        header = data.split(",")
-                    else : 
-                        joint_list.append(data.split(","))
-                    line_count += 1
+        
+        with open('/home/ingjae/catkin_ws/src/move_arm/trajectory_csv/position_test.csv') as traj:
+            while 1:
+                data = traj.readline().replace("\n","").replace("(","").replace(")","").replace(" ","").strip("\"")
+                # print (data)
+                if not data:
+                    print ("read complete") 
+                    break
+                if line_count == 0 :
+                    header = data.split(",")
+                else : 
+                    joint_list.append(data.split(","))
+                line_count += 1
+
 
         while not rospy.is_shutdown():
             if rospy.get_param("trajectory_status") == 1:
+                print(joint_list)
                 for joint in joint_list:
-                    clint.move_joint(joint[0],joint[1],joint[2],joint[3],joint[4],joint[5])
+                    client.move_joint(float(joint[0]),float(joint[1]),float(joint[2]),float(joint[3]),float(joint[4]),float(joint[5]))
+                    rospt.sleep(0.05)
             else:
                 pass
+            rate.sleep()
         # print (joint_list[0][5])  
           
             
