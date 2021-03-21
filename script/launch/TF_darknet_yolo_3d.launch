@@ -11,6 +11,6 @@
   <node pkg="move_arm" type="darknet_yolo_3d_frame.py" name="darknet_yolo_3d_frame" output = "screen"/>
 
   <!-- Robot Action Client -->
-  <node pkg="move_arm" type="darknet_yolo_3d_client.py" name="darknet_yolo_3d_client" output = "screen"/>
+  <!-- <node pkg="move_arm" type="darknet_yolo_3d_client.py" name="darknet_yolo_3d_client" output = "screen"/> -->
 
 </launch>
