@@ -94,9 +94,8 @@ def cb_bounding_boxes_3d(data):
         else:   
             target_button = -1
 
-    # print(target_button)
     if((target_button != -1) and (len(box_data.bounding_boxes) >= target_button)):
-        # print (box_data.bounding_boxes,target_button)
+
         target_x_min = box_data.bounding_boxes[target_button].xmin
         target_x_max = box_data.bounding_boxes[target_button].xmax
         target_y_min = box_data.bounding_boxes[target_button].ymin
@@ -121,6 +120,11 @@ def cb_bounding_boxes_3d(data):
         button_point_pub.publish(target_point)
        
     else:
+        # can't see target button
+        target_point.x = 0
+        target_point.y = 0
+        target_point.z = 0
+        button_point_pub.publish(target_point)
         pass    
     
 
