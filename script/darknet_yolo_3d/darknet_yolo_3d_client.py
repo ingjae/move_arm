@@ -108,10 +108,10 @@ class MoveClient(object):
         pose_target.position.x = pos_x  
         pose_target.position.y = pos_y
         pose_target.position.z = pos_z
-        pose_target.orientation.x = 0.707
-        pose_target.orientation.y =  0.006
-        pose_target.orientation.z = -0.006
-        pose_target.orientation.w =   0.707
+        pose_target.orientation.x = 0.0
+        pose_target.orientation.y =  0.0
+        pose_target.orientation.z = 0.0
+        pose_target.orientation.w =  1.0
         group.set_pose_target(pose_target)
         plan = group.go(wait=True)
         # rospy.sleep(5)
@@ -129,8 +129,7 @@ class MoveClient(object):
         joint_goal[4] = joint5
         joint_goal[5] = joint6
         group.go(joint_goal, wait=True)
-        rospy.sleep(5)
-        
+
         current_joints = self.group.get_current_joint_values()
         return all_close(joint_goal, current_joints, 0.01)  
     
@@ -192,19 +191,26 @@ if __name__=="__main__":
                 rospy.set_param("status",-1)
 
             elif (rospy.get_param('status')== 0 and go_state == 1): # 6 floor
-                # client.move_joint(0,0,0,0,0,0) # 홈포즈 
+                client.move_joint(0, 0.7236021757125854, 0.8972189426422119, 0, -4.079078674316406, 0)
                 rospy.logwarn("Press button")
                 print("executing command")
                 (tar_trans, tar_rot)= lookup_trans_tar()        
-                tar_trans[0]=tar_trans[0] - 0.12403
+                tar_trans[0]=tar_trans[0] - 0.17403
+
                 print("move")
                 client.move_xyz(tar_trans[0],tar_trans[1], tar_trans[2])
                 print("push")
-                # tar_trans[1]=tar_trans[1] - 0.02
-                # client.move_xyz(tar_trans[0],tar_trans[1], tar_trans[2])
-                # tar_trans[1]=tar_trans[1] + 0.02
-                # client.move_xyz(tar_trans[0],tar_trans[1], tar_trans[2])
+                tar_trans[0]=tar_trans[0] + 0.037
+                client.move_xyz(tar_trans[0],tar_trans[1], tar_trans[2])
+                tar_trans[0]=tar_trans[0] - 0.03
+                client.move_xyz(tar_trans[0],tar_trans[1], tar_trans[2])
                 rospy.set_param("status",-1)
+            
+            elif(rospy.get_param('status'==3)): # ready pose
+                print('get ready pose')
+                client.move_joint(0, 0.7236021757125854, 0.8972189426422119, 0, -4.079078674316406, 0)
+                rospy.set_param("status",-1)
+
             
             elif (rospy.get_param('status')== 4):
                 j=14

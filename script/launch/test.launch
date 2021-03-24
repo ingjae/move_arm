@@ -1,0 +1,7 @@
+<launch> 
+  <machine name = "james" address="192.168.10.102" user="watt" timeout="10" password="1q2w3e4r" env-loader="/home/watt/catkin_ws/devel/env.sh" default="true" />
+  
+  <!-- darknet ros 3d button launch -->
+  <include file="$(find darknet_ros_3d)/launch/darknet_ros_3d_buttons.launch"/>
+
+</launch>
