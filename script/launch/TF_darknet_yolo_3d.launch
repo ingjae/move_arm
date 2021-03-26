@@ -1,7 +1,7 @@
 <launch>
   
   <!-- camera with arm -->
-  <node pkg="tf" type="static_transform_publisher" name="astra_link" args=" 0.21901 0.04604 0.91304 0 0 0 base_link camera_link 50" />
+  <!-- <node pkg="tf" type="static_transform_publisher" name="astra_link" args=" 0.21901 0.04604 0.91304 0 0 0 base_link camera_link 50" /> -->
   
   <!-- target point publisher -->
 

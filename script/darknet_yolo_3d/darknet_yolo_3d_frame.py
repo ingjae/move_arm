@@ -51,7 +51,7 @@ class ObjectFrame(object):
     
         try:
 
-            (trans,rot) = self.camera_link_listener.lookupTransform('/base_link','/camera_link', rospy.Time(0))
+            (trans,rot) = self.camera_link_listener.lookupTransform('/base_link','/camera_head_link', rospy.Time(0))
         except (tf.LookupException, tf.ConnectivityException, tf.ExtrapolationException):
             return 0
         
@@ -71,7 +71,7 @@ class ObjectFrame(object):
             (self.frame_orientation.x,self.frame_orientation.y,self.frame_orientation.z,self.frame_orientation.w),
             self.current_time,
             "target_link",
-            "camera_link"
+            "camera_head_link"
         )
 
        
