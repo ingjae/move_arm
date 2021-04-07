@@ -140,7 +140,7 @@ class MoveClient(object):
         else:
             pass
             # print("wrong pose")
-        rospy.sleep(0.5)
+        # rospy.sleep(0.5)
         current_pose = self.group.get_current_pose().pose
         return all_close(pose_target, current_pose, 0.01)
 
@@ -158,7 +158,7 @@ class MoveClient(object):
         pose_target.orientation.w = 0
         group.set_pose_target(pose_target)
         plan = group.go(wait=True)
-        rospy.sleep(5)
+        # rospy.sleep(5)
         current_pose = self.group.get_current_pose().pose
         return all_close(pose_target, current_pose, 0.01)
     
@@ -173,7 +173,7 @@ class MoveClient(object):
         joint_goal[4] = self.init_a_list[4]      # -32.9
         joint_goal[5] = self.init_a_list[5]       # 4
         group.go(joint_goal, wait=True)
-        rospy.sleep(1)
+        # rospy.sleep(1)
         current_joints = self.group.get_current_joint_values()
         return all_close(joint_goal, current_joints, 3)  
 
@@ -187,7 +187,7 @@ class MoveClient(object):
         joint_goal[4] = self.init_b_list[4]      # -18.5
         joint_goal[5] = self.init_b_list[5]        # -7.7
         group.go(joint_goal, wait=True)
-        rospy.sleep(0.05)
+        # rospy.sleep(0.05)
         current_joints = self.group.get_current_joint_values()
         return all_close(joint_goal, current_joints, 3)  
 
@@ -201,7 +201,7 @@ class MoveClient(object):
         joint_goal[4] = self.init_c_list[4]      # -3.8
         joint_goal[5] = self.init_c_list[5]       # 4
         group.go(joint_goal, wait=True)
-        rospy.sleep(3)
+        # rospy.sleep(3)
         current_joints = self.group.get_current_joint_values()
         return all_close(joint_goal, current_joints, 3)  
 
@@ -216,7 +216,7 @@ class MoveClient(object):
             joint_goal[4] = self.ready_0_list[4]
             joint_goal[5] = self.ready_0_list[5]
             group.go(joint_goal, wait=True)
-            rospy.sleep(2)  
+            # rospy.sleep(2)  
             current_joints = self.group.get_current_joint_values()
             return all_close(joint_goal, current_joints, 3)
 
@@ -230,7 +230,7 @@ class MoveClient(object):
             joint_goal[4] = self.ready_90_list[4]
             joint_goal[5] = self.ready_90_list[5]
             group.go(joint_goal, wait=True)
-            rospy.sleep(2)     
+            # rospy.sleep(2)     
             current_joints = self.group.get_current_joint_values()
             return all_close(joint_goal, current_joints, 3)
 
@@ -244,7 +244,7 @@ class MoveClient(object):
             joint_goal[4] = self.ready_180_list[4]
             joint_goal[5] = self.ready_180_list[5]
             group.go(joint_goal, wait=True)
-            rospy.sleep(2)            
+            # rospy.sleep(2)            
             current_joints = self.group.get_current_joint_values()
             return all_close(joint_goal, current_joints, 3)
 
@@ -258,7 +258,7 @@ class MoveClient(object):
             joint_goal[4] = self.ready_270_list[4]
             joint_goal[5] = self.ready_270_list[5]
             group.go(joint_goal, wait=True)
-            rospy.sleep(3)            
+            # rospy.sleep(3)            
             current_joints = self.group.get_current_joint_values()
             return all_close(joint_goal, current_joints, 3)
         else:
@@ -300,7 +300,7 @@ def quternion_rotation(tar1,tar2,tar3,tar4):
 def charging_up_pose(tar1,tar2,tar3,rot1,rot2,rot3,rot4):
     client = MoveClient()
     client.move_pose(tar1,tar2,tar3+0.18,rot1,rot2,rot3,rot4)
-    rospy.sleep(0.5)
+    # rospy.sleep(0.5)
     
 def charging_down_pose():
     client = MoveClient()
@@ -321,11 +321,17 @@ def charging_down_pose():
 
     # charging down
     client.move_pose(tar_trans[0],tar_trans[1],tar_trans[2]+0.170,new_rot[0],new_rot[1],new_rot[2],new_rot[3]) # before charging
+    # client.move_pose(tar_trans[0],tar_trans[1],tar_trans[2]+0.170,new_rot[0],new_rot[1],new_rot[2],new_rot[3]) # before charging
+    # client.move_pose(tar_trans[0],tar_trans[1],tar_trans[2]+0.170,new_rot[0],new_rot[1],new_rot[2],new_rot[3]) # before charging
+    # client.move_pose(tar_trans[0],tar_trans[1],tar_trans[2]+0.170,new_rot[0],new_rot[1],new_rot[2],new_rot[3]) # before charging
+    # client.move_pose(tar_trans[0],tar_trans[1],tar_trans[2]+0.170,new_rot[0],new_rot[1],new_rot[2],new_rot[3]) # before charging
+    # client.move_pose(tar_trans[0],tar_trans[1],tar_trans[2]+0.170,new_rot[0],new_rot[1],new_rot[2],new_rot[3]) # before charging
+
     client.move_pose(tar_trans[0],tar_trans[1],tar_trans[2]+0.150,new_rot[0],new_rot[1],new_rot[2],new_rot[3]) # charging
     
     rospy.logwarn("go to charge")
 
-    rospy.sleep(1.5)
+    # rospy.sleep(1.5)
     return(tar_trans[0],tar_trans[1],tar_trans[2],new_rot[0],new_rot[1],new_rot[2],new_rot[3])
 
 
